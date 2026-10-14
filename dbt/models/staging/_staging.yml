@@ -1,0 +1,55 @@
+version: 2
+models:
+- name: stg_acs__county
+  description: 'Typed ACS 5-year county rows. Census sentinel codes are converted to NULL; the original
+    code is kept in `<metric>_flag` / `<metric>_moe_flag`. County names have the ", <State>" suffix removed.
+    Grain: geoid x acs_year.
+
+    '
+  columns:
+  - name: geoid
+    description: 5-digit county FIPS (state + county).
+    data_tests:
+    - not_null
+  - name: county_name
+    description: Standardized county name, e.g. 'Miami-Dade County'.
+    data_tests:
+    - not_null
+  - name: acs_year
+    description: ACS vintage (end year of the 5-year window).
+    data_tests:
+    - not_null
+  - name: total_population
+    description: B01003_001E total population.
+    data_tests:
+    - not_null
+  - name: total_population_moe
+    description: B01003_001M. County population is controlled to official estimates, so the API returns
+      -555555555 (MOE not appropriate) -> NULL, with the code kept in total_population_moe_flag.
+  - name: median_household_income
+    description: B19013_001E median household income, in that vintage's inflation-adjusted dollars.
+  - name: median_household_income_flag
+    description: Original Census annotation code when the income estimate was a sentinel, else NULL.
+  data_tests:
+  - dbt_utils_free_unique_combo:
+      arguments:
+        columns:
+        - geoid
+        - acs_year
+- name: stg_acs__state
+  description: Typed official ACS 5-year state totals. Grain state_fips x acs_year.
+  columns:
+  - name: state_fips
+    description: 2-digit state FIPS.
+    data_tests:
+    - not_null
+  - name: total_population
+    description: Official state total population.
+    data_tests:
+    - not_null
+  data_tests:
+  - dbt_utils_free_unique_combo:
+      arguments:
+        columns:
+        - state_fips
+        - acs_year

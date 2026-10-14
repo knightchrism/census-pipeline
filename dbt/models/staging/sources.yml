@@ -1,0 +1,35 @@
+version: 2
+sources:
+  - name: census_raw
+    description: >
+      Raw ACS 5-year rows exactly as returned by the Census Data API, written by
+      `census-ingest`. All data columns are VARCHAR; metadata columns start with `_`.
+    schema: raw
+    loaded_at_field: _loaded_at
+    # ACS 5-year is released once a year (December), so >400 days without a load = stale.
+    freshness:
+      warn_after: {count: 400, period: day}
+      error_after: {count: 800, period: day}
+    tables:
+      - name: acs5_county
+        description: One row per county per ACS vintage (geoid = state || county).
+        columns:
+          - name: NAME
+            description: "County name as published, e.g. 'Miami-Dade County, Florida'."
+          - name: state
+            description: 2-digit state FIPS.
+          - name: county
+            description: 3-digit county FIPS.
+          - name: _year
+            description: ACS vintage (end year of the 5-year window).
+          - name: _loaded_at
+            description: UTC timestamp of the ingest that wrote this row.
+          - name: _load_id
+            description: UUID of the ingest batch.
+      - name: acs5_state
+        description: One row per state per ACS vintage (the official state total).
+        columns:
+          - name: state
+            description: 2-digit state FIPS.
+          - name: _year
+            description: ACS vintage.

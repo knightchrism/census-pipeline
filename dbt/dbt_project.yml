@@ -1,0 +1,35 @@
+# dbt project. WHY: dbt turns raw VARCHAR API rows into typed, tested,
+# documented tables. Layers: staging (clean 1:1 with sources) -> intermediate
+# (derived columns) -> marts (what analysts / the MCP server query).
+name: census
+version: "1.0.0"
+config-version: 2
+profile: census
+model-paths: ["models"]
+macro-paths: ["macros"]
+test-paths: ["tests"]
+target-path: target
+clean-targets: [target, dbt_packages]
+
+vars:
+  # Mirrors `variables` in ../config.yaml (ACS code -> friendly name).
+  # WHAT BREAKS if they drift: staging selects columns that do not exist in raw.
+  acs_variables:
+    B01003_001: total_population
+    B19013_001: median_household_income
+    B01002_001: median_age
+    B03002_003: pop_white_non_hispanic
+    B03002_004: pop_black_non_hispanic
+    B03002_006: pop_asian_non_hispanic
+    B03002_012: pop_hispanic
+  # Allowed relative gap between sum(counties) and the official state estimate.
+  county_state_tolerance: 0.001
+
+models:
+  census:
+    staging:
+      +materialized: view
+    intermediate:
+      +materialized: view
+    marts:
+      +materialized: table

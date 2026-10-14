@@ -1,0 +1,13 @@
+version: 2
+models:
+- name: int_acs__county_enriched
+  description: Staging county rows plus derived shares, residual group and income CV.
+  columns:
+  - name: pop_other_non_hispanic
+    description: Total minus the four selected groups (other races / two or more races, non-Hispanic).
+    data_tests:
+    - accepted_range:
+        arguments:
+          min_value: 0
+  - name: median_household_income_cv
+    description: Coefficient of variation = (MOE/1.645)/estimate. >0.30 means low reliability.
