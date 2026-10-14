@@ -1,0 +1,8 @@
+# Copy to dbt/profiles.yml (gitignored). Run dbt from inside dbt/.
+census:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: ../data/census.duckdb
+      threads: 4

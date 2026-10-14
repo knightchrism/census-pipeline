@@ -1,0 +1,47 @@
+# =============================================================================
+# Pipeline configuration. WHY: every "what do we pull?" decision lives here so
+# that changing scope (another state, all 50 states, another year) is a config
+# edit, not a code change. WHAT BREAKS if removed: the ingest CLI has no idea
+# what to fetch and exits.
+# =============================================================================
+# Where data comes from:
+#   api           - Census Data API (needs CENSUS_API_KEY; any vintage)
+#   summary_file  - official ACS table-based Summary File bulk downloads (no key; 2019 + 2021-onward only)
+source: api
+summary_file_cache: data/cache
+
+dataset: acs/acs5          # ACS 5-year detailed tables (https://api.census.gov/data.json)
+
+# Vintages to pull. Each ACS 5-year vintage covers a 5-year window:
+#   2014 = 2010-2014, 2019 = 2015-2019, 2024 = 2020-2024 (non-overlapping -> valid growth comparisons).
+years: [2014, 2019, 2024]
+
+geography:
+  # State FIPS codes to pull. "12" = Florida. All 50 states = list every FIPS code here
+  # (and add their county counts below, or omit them to skip the count check).
+  states: ["12"]
+  # Validation: fail a state's load if the API returns a different county count.
+  expected_counties:
+    "12": 67
+
+# Estimate variables (E). The matching margin-of-error (M) column is added automatically.
+variables:
+  B01003_001: total_population          # Total population
+  B19013_001: median_household_income   # Median household income, inflation-adjusted to vintage-year dollars
+  B01002_001: median_age                # Median age (years)
+  B03002_003: pop_white_non_hispanic    # Not Hispanic or Latino: White alone
+  B03002_004: pop_black_non_hispanic    # Not Hispanic or Latino: Black or African American alone
+  B03002_006: pop_asian_non_hispanic    # Not Hispanic or Latino: Asian alone
+  B03002_012: pop_hispanic              # Hispanic or Latino (any race)
+
+http:
+  timeout_seconds: 60
+  max_retries: 5            # retries on 429/5xx/network errors
+  backoff_base_seconds: 2   # sleep = base * 2**attempt (+ jitter)
+
+validation:
+  min_numeric_parse_rate: 0.95   # share of E/M cells that must parse as numbers
+
+duckdb_path: data/census.duckdb
+raw_schema: raw
+log_path: logs/ingest.log

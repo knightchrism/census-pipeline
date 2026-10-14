@@ -218,3 +218,16 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# census-pipeline (union with the project .gitignore)
+.venv/
+*.pyc
+data/*
+!data/.gitkeep
+data/*.duckdb
+logs/
+dbt/target/
+dbt/logs/
+dbt/dbt_packages/
+dbt/profiles.yml
+dbt/.user.yml

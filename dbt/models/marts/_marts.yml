@@ -1,0 +1,215 @@
+version: 2
+models:
+- name: dim_county
+  description: One row per county (names from the latest vintage).
+  columns:
+  - name: geoid
+    description: 5-digit county FIPS.
+    data_tests:
+    - unique
+    - not_null
+  - name: county_name
+    description: Standardized county name (no ', Florida').
+    data_tests:
+    - not_null
+  - name: state_fips
+    description: 2-digit state FIPS.
+    data_tests:
+    - not_null
+  - name: first_acs_year
+    description: Earliest loaded vintage for this county.
+  - name: last_acs_year
+    description: Latest loaded vintage for this county.
+- name: fct_county_demographics
+  description: 'ACS 5-year demographics, one row per county per vintage. Estimates come with 90% margins
+    of error (`_moe`). Medians are NOT additive - never sum or average them across counties; use fct_state_demographics
+    for state medians.
+
+    '
+  columns:
+  - name: county_year_key
+    description: geoid-acs_year surrogate key.
+    data_tests:
+    - unique
+    - not_null
+  - name: geoid
+    description: 5-digit county FIPS.
+    data_tests:
+    - not_null
+    - relationships:
+        arguments:
+          to: ref('dim_county')
+          field: geoid
+  - name: county_name
+    description: Standardized county name.
+  - name: acs_year
+    description: ACS vintage (end year of 5-year window).
+    data_tests:
+    - not_null
+    - accepted_range:
+        arguments:
+          min_value: 2009
+          max_value: 2100
+  - name: acs_period
+    description: Survey window, e.g. '2020-2024'.
+  - name: total_population
+    description: Total population (B01003_001E).
+    data_tests:
+    - not_null
+    - accepted_range:
+        arguments:
+          min_value: 1
+          max_value: 40000000
+  - name: total_population_moe
+    description: MOE for total population (NULL - controlled estimate).
+  - name: median_household_income
+    description: Median household income (B19013_001E) in vintage-year dollars.
+    data_tests:
+    - accepted_range:
+        arguments:
+          min_value: 10000
+          max_value: 250000
+  - name: median_household_income_moe
+    description: 90% MOE for median household income.
+  - name: median_household_income_flag
+    description: Census annotation code if income was suppressed.
+  - name: median_household_income_cv
+    description: Coefficient of variation of income estimate.
+  - name: median_household_income_low_reliability
+    description: TRUE when CV > 0.30.
+  - name: median_age
+    description: Median age in years (B01002_001E).
+    data_tests:
+    - accepted_range:
+        arguments:
+          min_value: 15
+          max_value: 80
+  - name: median_age_moe
+    description: 90% MOE for median age.
+  - name: median_age_flag
+    description: Census annotation code if median age was suppressed.
+  - name: pop_hispanic
+    description: Hispanic or Latino population of any race (B03002_012E).
+    data_tests:
+    - accepted_range:
+        arguments:
+          min_value: 0
+  - name: pop_white_non_hispanic
+    description: Non-Hispanic White alone (B03002_003E).
+  - name: pop_black_non_hispanic
+    description: Non-Hispanic Black alone (B03002_004E).
+  - name: pop_asian_non_hispanic
+    description: Non-Hispanic Asian alone (B03002_006E).
+  - name: pop_other_non_hispanic
+    description: Residual non-Hispanic population (other/multiple races).
+  - name: pct_hispanic
+    description: Hispanic share of total population (0-1).
+    data_tests:
+    - accepted_range:
+        arguments:
+          min_value: 0
+          max_value: 1
+  - name: pct_white_non_hispanic
+    description: NH White share (0-1).
+    data_tests:
+    - accepted_range:
+        arguments:
+          min_value: 0
+          max_value: 1
+  - name: pct_black_non_hispanic
+    description: NH Black share (0-1).
+  - name: pct_asian_non_hispanic
+    description: NH Asian share (0-1).
+  - name: loaded_at
+    description: UTC time of the ingest batch.
+  - name: state_fips
+    description: 2-digit state FIPS.
+  - name: county_fips
+    description: 3-digit county FIPS.
+- name: fct_county_growth
+  description: 'County change between every pair of loaded vintages. Growth = (end-start)/start, NULL
+    when either side is NULL or start is 0. Prefer rows where windows_non_overlapping is TRUE. Income
+    growth is nominal (not inflation-adjusted).
+
+    '
+  columns:
+  - name: county_period_key
+    description: geoid-start-end key.
+    data_tests:
+    - unique
+    - not_null
+  - name: geoid
+    description: County FIPS.
+    data_tests:
+    - relationships:
+        arguments:
+          to: ref('dim_county')
+          field: geoid
+  - name: start_year
+    description: Earlier vintage.
+  - name: end_year
+    description: Later vintage.
+  - name: windows_non_overlapping
+    description: TRUE when the two 5-year windows share no years.
+  - name: total_population_growth
+    description: Relative population change (0.10 = +10%).
+    data_tests:
+    - accepted_range:
+        arguments:
+          min_value: -0.9
+          max_value: 5
+  - name: median_household_income_growth_nominal
+    description: Relative nominal income change.
+  - name: median_age_change
+    description: Change in median age (years).
+  - name: pop_hispanic_growth
+    description: Relative change in Hispanic population.
+  - name: pct_hispanic_change_pts
+    description: Change in Hispanic share (fraction points).
+- name: fct_state_demographics
+  description: Official state ACS estimates per vintage, plus county rollups for reconciliation.
+  columns:
+  - name: state_year_key
+    description: state_fips-acs_year key.
+    data_tests:
+    - unique
+    - not_null
+  - name: total_population
+    description: Official state total population.
+    data_tests:
+    - not_null
+    - county_sum_matches_state:
+        arguments:
+          county_sum_column: county_sum_total_population
+  - name: pop_hispanic
+    description: Official state Hispanic population.
+    data_tests:
+    - county_sum_matches_state:
+        arguments:
+          county_sum_column: county_sum_pop_hispanic
+  - name: median_household_income
+    description: Official state median household income (not derivable from counties).
+  - name: median_age
+    description: Official state median age.
+  - name: county_count
+    description: Counties loaded for that state/vintage.
+    data_tests:
+    - accepted_range:
+        arguments:
+          min_value: 1
+  - name: county_sum_total_population
+    description: Sum of county populations.
+  - name: county_sum_pop_hispanic
+    description: Sum of county Hispanic populations.
+  - name: county_sum_pop_hispanic_moe_approx
+    description: 'Approximate MOE of the county sum: sqrt(sum(moe^2)).'
+- name: fct_state_growth
+  description: State-level change between every pair of loaded vintages (official estimates).
+  columns:
+  - name: state_period_key
+    description: Key.
+    data_tests:
+    - unique
+    - not_null
+  - name: total_population_growth
+    description: Relative population change.

@@ -1,0 +1,106 @@
+# =============================================================================
+# Governed metrics (semantic layer).
+# WHY: an agent asked "what's the median income in Orange County?" should not
+# invent SQL. Each metric here pins ONE definition: which table, which column
+# or formula, the grain, and the caveats. The MCP server's get_metric tool
+# reads this file and generates SQL from it.
+# WHAT BREAKS if removed: list_metrics/get_metric stop working; agents fall
+# back to free-form run_query and may e.g. sum medians across counties.
+#
+# Why not dbt MetricFlow? dbt-duckdb can parse semantic models, but querying
+# them needs the separate MetricFlow CLI/Semantic Layer service; a small YAML
+# file the MCP server reads directly is easier to understand and test.
+#
+# Schema of each metric:
+#   label, description, unit, formula (human readable), additive (can it be summed
+#   across counties?), caveats, and `sources` keyed by group_by level:
+#     county -> one row per county per year;  state -> official state estimate per year
+#   each source: table, expression (SQL over that table), optional moe_expression,
+#   year_column, optional filter (always applied).
+# =============================================================================
+version: 1
+default_caveats:
+  - "ACS 5-year estimates are survey-based period estimates (e.g. 2024 = 2020-2024 average), not point-in-time counts."
+  - "Every estimate has a 90% margin of error (MOE); differences smaller than the combined MOE may not be statistically significant."
+  - "Do not compare overlapping 5-year windows (e.g. 2021 vs 2024) as if they were independent; compare non-overlapping vintages (2019 vs 2024)."
+  - "Dollar values are in each vintage's own inflation-adjusted dollars; cross-year dollar comparisons are nominal."
+
+metrics:
+  total_population:
+    label: Total population
+    description: Total resident population (ACS table B01003).
+    unit: people
+    formula: B01003_001E
+    additive: true
+    caveats: ["County totals are controlled to Census population estimates, so the API reports no MOE (code -555555555 -> NULL)."]
+    sources:
+      county: {table: main.fct_county_demographics, expression: total_population, moe_expression: total_population_moe, year_column: acs_year}
+      state:  {table: main.fct_state_demographics,  expression: total_population, moe_expression: total_population_moe, year_column: acs_year}
+
+  median_household_income:
+    label: Median household income
+    description: Median household income in the past 12 months (ACS B19013), in vintage-year inflation-adjusted dollars.
+    unit: USD
+    formula: B19013_001E
+    additive: false
+    caveats:
+      - "Medians cannot be summed or averaged across counties; the state value is the official state median."
+      - "Check median_household_income_low_reliability (CV > 0.30) for small counties."
+    sources:
+      county: {table: main.fct_county_demographics, expression: median_household_income, moe_expression: median_household_income_moe, year_column: acs_year}
+      state:  {table: main.fct_state_demographics,  expression: median_household_income, moe_expression: median_household_income_moe, year_column: acs_year}
+
+  median_age:
+    label: Median age
+    description: Median age of the total population (ACS B01002).
+    unit: years
+    formula: B01002_001E
+    additive: false
+    caveats: ["Medians are not additive across geographies."]
+    sources:
+      county: {table: main.fct_county_demographics, expression: median_age, moe_expression: median_age_moe, year_column: acs_year}
+      state:  {table: main.fct_state_demographics,  expression: median_age, moe_expression: median_age_moe, year_column: acs_year}
+
+  hispanic_population:
+    label: Hispanic or Latino population
+    description: Hispanic or Latino population of any race (ACS B03002_012).
+    unit: people
+    formula: B03002_012E
+    additive: true
+    caveats: ["Hispanic origin is an ethnicity; Hispanic people may be of any race."]
+    sources:
+      county: {table: main.fct_county_demographics, expression: pop_hispanic, moe_expression: pop_hispanic_moe, year_column: acs_year}
+      state:  {table: main.fct_state_demographics,  expression: pop_hispanic, moe_expression: pop_hispanic_moe, year_column: acs_year}
+
+  hispanic_share:
+    label: Hispanic share of population
+    description: Share of the population that is Hispanic or Latino.
+    unit: ratio (0-1)
+    formula: B03002_012E / B01003_001E
+    additive: false
+    caveats: ["Ratio of two estimates; its MOE is not provided here (see Census ACS handbook ch. 8 for the ratio formula)."]
+    sources:
+      county: {table: main.fct_county_demographics, expression: "round(pct_hispanic, 4)", year_column: acs_year}
+      state:  {table: main.fct_state_demographics,  expression: "round(pct_hispanic, 4)", year_column: acs_year}
+
+  population_growth:
+    label: Population growth
+    description: Relative change in total population between two non-overlapping ACS 5-year vintages. `year` filters the END year.
+    unit: ratio (0.10 = +10%)
+    formula: (pop_end - pop_start) / pop_start
+    additive: false
+    caveats: ["NULL when either vintage is missing or the start value is 0.", "Only non-overlapping windows (>= 5 years apart) are returned."]
+    sources:
+      county: {table: main.fct_county_growth, expression: "round(total_population_growth, 4)", year_column: end_year, start_year_column: start_year, filter: windows_non_overlapping}
+      state:  {table: main.fct_state_growth,  expression: "round(total_population_growth, 4)", year_column: end_year, start_year_column: start_year, filter: windows_non_overlapping}
+
+  median_household_income_growth:
+    label: Median household income growth (nominal)
+    description: Relative change in median household income between non-overlapping vintages, NOT inflation-adjusted.
+    unit: ratio
+    formula: (income_end - income_start) / income_start
+    additive: false
+    caveats: ["Nominal dollars: part of the change is inflation (CPI-U rose roughly 20%+ between the 2019 and 2024 vintages' reference dollars)."]
+    sources:
+      county: {table: main.fct_county_growth, expression: "round(median_household_income_growth_nominal, 4)", year_column: end_year, start_year_column: start_year, filter: windows_non_overlapping}
+      state:  {table: main.fct_state_growth,  expression: "round(median_household_income_growth_nominal, 4)", year_column: end_year, start_year_column: start_year, filter: windows_non_overlapping}
