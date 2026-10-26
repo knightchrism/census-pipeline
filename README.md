@@ -1,11 +1,27 @@
 # census-pipeline
 
-An end-to-end, learner-friendly data engineering project:
-**US Census ACS 5-year data → DuckDB → dbt (staging / intermediate / marts + tests + docs) → governed metrics → MCP server for AI agents.**
+**US Census ACS data → DuckDB → tested dbt models → governed metrics → a read-only MCP server AI agents can query safely.**
+
+<p>
+  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-00e5ff?style=flat-square"></a>
+  <img alt="Python 3.11+" src="https://img.shields.io/badge/python-3.11%2B-00e5ff?style=flat-square&logo=python&logoColor=white">
+  <img alt="dbt" src="https://img.shields.io/badge/dbt-duckdb-0b1220?style=flat-square&logo=dbt">
+  <img alt="DuckDB" src="https://img.shields.io/badge/DuckDB-0b1220?style=flat-square&logo=duckdb">
+  <img alt="MCP" src="https://img.shields.io/badge/MCP-FastMCP-0b1220?style=flat-square">
+  <img alt="uv" src="https://img.shields.io/badge/uv-managed-0b1220?style=flat-square">
+</p>
 
 Scope today: **Florida (state FIPS 12), 67 counties + the state total**, ACS 5-year vintages, with
 population, median household income, median age and Hispanic / race counts, each with its margin of error.
 Scaling to all 50 states is a config change (`geography.states` in `config.yaml`).
+
+## What it does
+
+- **Ingests** ACS 5-year data from the Census Data API (key) or the official ACS Summary File (no key), with retries, backoff and quality gates (row counts, columns, duplicate GEOIDs, parse rate) before anything is loaded.
+- **Loads idempotently** into DuckDB: each (year, state) is replaced atomically, never duplicated.
+- **Transforms and tests** with dbt: sentinel codes → `NULL` + flag (nothing silently dropped), CVs for reliability, growth only across non-overlapping windows, and a reconciliation test that the 67 counties sum to the state total.
+- **Governs metrics** in `semantic/metrics.yml` (formula, grain, caveats) and compiles them to parameterized SQL.
+- **Serves agents** through a read-only MCP server: `list_tables`, `describe_table`, `run_query`, `list_metrics`, `get_metric`, every call logged.
 
 ## Architecture
 
@@ -101,6 +117,14 @@ Use with an MCP client (e.g. Claude Desktop `claude_desktop_config.json`):
 
 Re-running ingestion is safe: each (year, state) is replaced atomically, never duplicated.
 
+On Windows, clone to a local folder such as `C:\dev\census-pipeline` (keep projects out of OneDrive-synced folders) and run the same `uv` commands in PowerShell.
+
+## AI / agent angle
+
+`census-mcp` gives an agent governed metrics and a guarded, read-only SQL tool instead of raw tables, so answers come from tested marts.
+`scripts/mcp_demo.py` drives the server over stdio like an agent would and records the real tool calls and outputs in
+[`examples/agent_queries.md`](examples/agent_queries.md). `tests/test_mcp_safety.py` covers the query guard.
+
 ## Key concepts (read these before changing things)
 
 * **Sentinel codes.** The Census encodes "no value" as numbers like `-666666666`. Staging turns them into
@@ -121,6 +145,19 @@ Re-running ingestion is safe: each (year, state) is replaced atomically, never d
 * Expose dbt docs as MCP resources; add an orchestrator (cron / GitHub Actions / Dagster).
 * Add more tables (B01001 age bands, B17001 poverty, B25077 home values).
 
+## Tech stack
+
+Python · uv · requests · DuckDB · dbt-duckdb · YAML semantic layer · MCP Python SDK (FastMCP) · pytest
+
+## Disclaimer
+
+ACS figures are survey **estimates** with margins of error. This is a data-engineering demonstration for learning and testing; outputs are not official Census Bureau statistics and should be checked against [data.census.gov](https://data.census.gov) before any real use.
+
+## Credits
+
+- **Data:** U.S. Census Bureau, American Community Survey 5-year estimates, via the [Census Data API](https://www.census.gov/data/developers.html) and the [ACS Summary File](https://www.census.gov/programs-surveys/acs/data/summary-file.html). U.S. federal government works are public domain. *This product uses the Census Bureau Data API but is not endorsed or certified by the Census Bureau.*
+- **Software:** [DuckDB](https://duckdb.org) (MIT), [dbt-core](https://github.com/dbt-labs/dbt-core) / [dbt-duckdb](https://github.com/duckdb/dbt-duckdb) (Apache-2.0), [MCP Python SDK](https://github.com/modelcontextprotocol/python-sdk) (MIT), [requests](https://requests.readthedocs.io) (Apache-2.0), [PyYAML](https://pyyaml.org) (MIT), [python-dotenv](https://github.com/theskumar/python-dotenv) (BSD-3-Clause), [pytest](https://pytest.org) (MIT), [uv](https://docs.astral.sh/uv/) (MIT/Apache-2.0). Each keeps its own license.
+
 ## License
 
-MIT, see `LICENSE`.
+Code: MIT, see [LICENSE](LICENSE).
