@@ -9,7 +9,7 @@ dependencies = [
   "pyyaml>=6.0",
   "python-dotenv>=1.0",
   "dbt-duckdb>=1.9",
-  "mcp>=1.2,<2",  # FastMCP API; mcp 2.x renamed it to MCPServer
+  "mcp>=1.2,<3",  # FastMCP API; mcp 2.x renamed it to MCPServer
 ]
 
 [project.scripts]
