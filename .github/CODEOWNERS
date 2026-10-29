@@ -1,0 +1,4 @@
+# Default owner for everything; security-relevant paths listed explicitly.
+*                   @knightchrism
+/.github/           @knightchrism
+/SECURITY.md        @knightchrism
