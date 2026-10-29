@@ -1,0 +1,17 @@
+# Dependabot: weekly version updates. Security updates also need Settings > Code security > Dependabot security updates.
+version: 2
+updates:
+  - package-ecosystem: uv
+    directory: "/"
+    schedule: {interval: weekly}
+    open-pull-requests-limit: 5
+    groups:
+      uv-minor-patch:
+        update-types: [minor, patch]
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule: {interval: weekly}
+    open-pull-requests-limit: 5
+    groups:
+      github_actions-minor-patch:
+        update-types: [minor, patch]

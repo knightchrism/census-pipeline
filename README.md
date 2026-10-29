@@ -1,5 +1,7 @@
 # census-pipeline
 
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/knightchrism/census-pipeline/badge)](https://scorecard.dev/viewer/?uri=github.com/knightchrism/census-pipeline)
+
 **US Census ACS data → DuckDB → tested dbt models → governed metrics → a read-only MCP server AI agents can query safely.**
 
 <p>
