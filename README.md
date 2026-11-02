@@ -5,7 +5,7 @@
 **US Census ACS data → DuckDB → tested dbt models → governed metrics → a read-only MCP server AI agents can query safely.**
 
 <p>
-  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-00e5ff?style=flat-square"></a>
+  <a href="LICENSE"><img alt="License: All rights reserved" src="https://img.shields.io/badge/license-All%20rights%20reserved-00e5ff?style=flat-square"></a>
   <img alt="Python 3.11+" src="https://img.shields.io/badge/python-3.11%2B-00e5ff?style=flat-square&logo=python&logoColor=white">
   <img alt="dbt" src="https://img.shields.io/badge/dbt-duckdb-0b1220?style=flat-square&logo=dbt">
   <img alt="DuckDB" src="https://img.shields.io/badge/DuckDB-0b1220?style=flat-square&logo=duckdb">
@@ -72,7 +72,7 @@ census-pipeline/
 ├── examples/agent_queries.md   # real tool calls + real outputs
 ├── tests/                      # pytest: ingestion parsing, MCP safety, metrics
 ├── data/  logs/                # created at runtime (gitignored)
-└── LICENSE (MIT)
+└── LICENSE (All rights reserved)
 ```
 
 ## Setup
@@ -162,4 +162,4 @@ ACS figures are survey **estimates** with margins of error. This is a data-engin
 
 ## License
 
-Code: MIT, see [LICENSE](LICENSE).
+Copyright (c) 2026 GeoKnight GIS. All rights reserved. No copying or reuse without written permission; see [LICENSE](LICENSE). Third-party libraries and data keep their own licenses and terms (listed in [LICENSE](LICENSE)).

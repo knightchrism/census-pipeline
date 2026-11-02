@@ -1,5 +1,6 @@
 [project]
 name = "census-pipeline"
+license = { text = "Proprietary" }
 version = "1.0.0"
 description = "Census API -> DuckDB -> dbt -> MCP server portfolio project"
 requires-python = ">=3.11"
