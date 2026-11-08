@@ -15,4 +15,6 @@ third-party libraries, fonts and data remain under their own licenses and
 terms, which are not changed by this notice:
 
 - Python dependencies keep their own licenses, including DuckDB (MIT), dbt-core / dbt-duckdb (Apache-2.0), MCP Python SDK (MIT), pathspec and certifi (MPL-2.0), and text-unidecode (Artistic-1.0 OR GPL-2.0+; used under Artistic-1.0).
-- U.S. Census Bureau data is a U.S. federal government work in the public domain. This product uses the Census Bureau Data API but is not endorsed or certified by the Census Bureau.
+- MapLibre GL JS 5.6.1 (BSD-3-Clause) is vendored under globe/static/vendor/ with its license file. pyshp (MIT) is a development dependency used to rebuild county geometry.
+- U.S. Census Bureau data and cartographic boundaries are U.S. federal government works in the public domain. This product uses Census Bureau data but is not endorsed or certified by the Census Bureau.
+- Natural Earth 1:110m land is a public-domain context layer for the globe. It is not a census boundary.

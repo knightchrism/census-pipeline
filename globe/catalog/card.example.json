@@ -1,0 +1,15 @@
+{
+  "id": "florida-census",
+  "title": "Florida Census Globe",
+  "summary": "67 Florida counties on a globe. ACS 5-year 2019 (2015–2019) and 2024 (2020–2024): population, income, age, Hispanic share, and change, with margins of error.",
+  "route": "/florida-census/",
+  "thumbnail": "card-thumbnail.png",
+  "feature_image": "card-jazz.png",
+  "status": "staging",
+  "integration": "pending",
+  "periods": ["2015-2019", "2020-2024"],
+  "county_count": 67,
+  "attribution": "© GeoKnight GIS. All rights reserved.",
+  "source_note": "U.S. Census Bureau, American Community Survey 5-year estimates. Not endorsed or certified by the Census Bureau.",
+  "field_names": "unverified against api/app/globes.py"
+}

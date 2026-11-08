@@ -121,6 +121,19 @@ Re-running ingestion is safe: each (year, state) is replaced atomically, never d
 
 On Windows, clone to a local folder such as `C:\dev\census-pipeline` (keep projects out of OneDrive-synced folders) and run the same `uv` commands in PowerShell.
 
+## Florida census globe
+
+A local navy-and-gold globe of the 67 Florida counties, built from the governed marts (ACS 5-year 2019 and 2024). It does not add a SQL endpoint. The ask panel answers from those metrics. The language-model adapter is **disabled** until a local LLM Lab contract is confirmed. See [docs/florida-census-globe.md](docs/florida-census-globe.md).
+
+```bash
+uv run census-ingest --source summary_file --years 2019 2024
+cd dbt && uv run dbt build --profiles-dir . && cd ..
+uv run census-globe-export
+uv run census-globe          # http://127.0.0.1:8765/  (loopback only)
+```
+
+Catalog integration for Globe Catalog is documented and not applied. This does not deploy or publish the globe.
+
 ## AI / agent angle
 
 `census-mcp` gives an agent governed metrics and a guarded, read-only SQL tool instead of raw tables, so answers come from tested marts.
@@ -158,7 +171,7 @@ ACS figures are survey **estimates** with margins of error. This is a data-engin
 ## Credits
 
 - **Data:** U.S. Census Bureau, American Community Survey 5-year estimates, via the [Census Data API](https://www.census.gov/data/developers.html) and the [ACS Summary File](https://www.census.gov/programs-surveys/acs/data/summary-file.html). U.S. federal government works are public domain. *This product uses the Census Bureau Data API but is not endorsed or certified by the Census Bureau.*
-- **Software:** [DuckDB](https://duckdb.org) (MIT), [dbt-core](https://github.com/dbt-labs/dbt-core) / [dbt-duckdb](https://github.com/duckdb/dbt-duckdb) (Apache-2.0), [MCP Python SDK](https://github.com/modelcontextprotocol/python-sdk) (MIT), [requests](https://requests.readthedocs.io) (Apache-2.0), [PyYAML](https://pyyaml.org) (MIT), [python-dotenv](https://github.com/theskumar/python-dotenv) (BSD-3-Clause), [pytest](https://pytest.org) (MIT), [uv](https://docs.astral.sh/uv/) (MIT/Apache-2.0). Each keeps its own license.
+- **Software:** [DuckDB](https://duckdb.org) (MIT), [dbt-core](https://github.com/dbt-labs/dbt-core) / [dbt-duckdb](https://github.com/duckdb/dbt-duckdb) (Apache-2.0), [MCP Python SDK](https://github.com/modelcontextprotocol/python-sdk) (MIT), [requests](https://requests.readthedocs.io) (Apache-2.0), [PyYAML](https://pyyaml.org) (MIT), [python-dotenv](https://github.com/theskumar/python-dotenv) (BSD-3-Clause), [pytest](https://pytest.org) (MIT), [uv](https://docs.astral.sh/uv/) (MIT/Apache-2.0), [MapLibre GL JS](https://maplibre.org) 5.6.1 (BSD-3-Clause, vendored), [pyshp](https://github.com/GeospatialPython/pyshp) (MIT, dev dependency for rebuilding geometry). Natural Earth 1:110m land is public domain and is used only as globe context. Each keeps its own license.
 
 ## License
 

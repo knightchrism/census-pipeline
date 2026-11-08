@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Florida Census Globe · GeoKnight GIS</title>
+  <link rel="stylesheet" href="/static/vendor/maplibre-gl.css">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <a class="skip" href="#detail">Skip to county detail</a>
+  <header class="top">
+    <div class="brand">
+      <p class="kicker">GeoKnight GIS</p>
+      <h1>Florida Census Globe</h1>
+      <p id="period-line">Loading the ACS vintages…</p>
+    </div>
+    <div class="year-switch" role="group" aria-label="ACS vintage">
+      <button type="button" id="year-2019" aria-pressed="false">2015–2019</button>
+      <button type="button" id="year-2024" aria-pressed="true">2020–2024</button>
+    </div>
+  </header>
+  <main class="stage">
+    <section class="panel tools" aria-label="Map layers and county list">
+      <fieldset>
+        <legend>Layer</legend>
+        <div id="layers" class="layers"></div>
+      </fieldset>
+      <p id="layer-note" class="note"></p>
+      <label class="search-label" for="county-search">Counties</label>
+      <input id="county-search" type="search" placeholder="Search 67 counties" autocomplete="off">
+      <div id="county-list" class="county-list" role="listbox" aria-label="Florida counties"></div>
+    </section>
+    <section class="map-wrap" aria-label="Globe">
+      <div id="map" role="application" aria-label="Florida counties drawn on a globe"></div>
+      <div class="map-tools" role="group" aria-label="View">
+        <button type="button" id="view-globe" aria-pressed="true">Globe</button>
+        <button type="button" id="view-flat" aria-pressed="false">Flat map</button>
+        <button type="button" id="view-florida">Frame Florida</button>
+      </div>
+      <div id="legend" class="legend" aria-live="polite"></div>
+      <div id="hover" class="hover" hidden></div>
+    </section>
+    <section class="panel detail" id="detail" aria-label="County detail">
+      <div class="tabs" role="tablist">
+        <button type="button" class="tab" id="tab-detail" role="tab" aria-selected="true" aria-controls="pane-detail">Detail</button>
+        <button type="button" class="tab" id="tab-compare" role="tab" aria-selected="false" aria-controls="pane-compare">Compare</button>
+        <button type="button" class="tab" id="tab-ask" role="tab" aria-selected="false" aria-controls="pane-ask">Ask</button>
+      </div>
+      <div id="pane-detail" role="tabpanel">
+        <p id="detail-empty" class="note">Select a county on the globe or in the list.</p>
+        <div id="detail-body" hidden></div>
+      </div>
+      <div id="pane-compare" role="tabpanel" hidden>
+        <label for="compare-a">First county</label>
+        <select id="compare-a"></select>
+        <label for="compare-b">Second county</label>
+        <select id="compare-b"></select>
+        <div id="compare-body" class="stack"></div>
+      </div>
+      <div id="pane-ask" role="tabpanel" hidden>
+        <p id="llm-banner" class="banner"></p>
+        <div class="prompts" id="prompts"></div>
+        <form id="ask-form">
+          <label for="question">Question</label>
+          <textarea id="question" name="question" maxlength="480" rows="3" placeholder="Median income in Orange County, 2024"></textarea>
+          <button type="submit">Ask the governed metrics</button>
+        </form>
+        <div id="ask-body" class="stack" aria-live="polite"></div>
+      </div>
+    </section>
+  </main>
+  <footer>
+    <p id="source-line"></p>
+    <p>© GeoKnight GIS. All rights reserved.</p>
+  </footer>
+  <script src="/static/vendor/maplibre-gl.js"></script>
+  <script src="/static/app.js"></script>
+</body>
+</html>
