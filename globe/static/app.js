@@ -94,8 +94,8 @@ function initMap(counties, land) {
       sources: {},
       layers: [{ id: "background", type: "background", paint: { "background-color": "#07111d" } }],
     },
-    center: [-83.4, 27.9],
-    zoom: 5.35,
+    center: [-83.7, 27.6],
+    zoom: 5.6,
     minZoom: 1.4,
     maxZoom: 9,
     attributionControl: false,
@@ -131,7 +131,12 @@ function initMap(counties, land) {
       paint: { "line-color": "#fff6d8", "line-width": 2.2 },
       filter: ["==", ["get", "geoid"], ""],
     });
-    frameFlorida(false, true);
+    frameFlorida(false);
+    window.addEventListener("resize", () => {
+      if (state.flew) return;
+      clearTimeout(state.frameTimer);
+      state.frameTimer = setTimeout(() => frameFlorida(false), 150);
+    });
     map.on("mousemove", "counties", (event) => {
       const feature = event.features && event.features[0];
       if (!feature) return;
@@ -151,13 +156,23 @@ function initMap(counties, land) {
   });
 }
 
-function frameFlorida(animate, close) {
-  const box = state.meta.bbox;
-  const center = [(box[0] + box[2]) / 2, (box[1] + box[3]) / 2];
-  const zoom = state.projection === "globe" ? (close ? 5.35 : 2.15) : (close ? 6.15 : 5.5);
-  const view = { center, zoom };
-  if (animate && motionOk()) state.map.easeTo({ ...view, duration: 600 });
-  else state.map.jumpTo(view);
+function floridaPadding() {
+  const narrow = window.innerWidth <= 980;
+  // Keep the panhandle, peninsula, and Keys inside the map, clear of the
+  // buttons, zoom control, and legend.
+  return narrow
+    ? { top: 76, right: 54, bottom: 196, left: 36 }
+    : { top: 68, right: 36, bottom: 168, left: 20 };
+}
+
+function frameFlorida(animate) {
+  const [west, south, east, north] = state.meta.bbox;
+  const bounds = [[west - 0.28, south - 0.42], [east + 0.32, north + 0.22]];
+  state.map.fitBounds(bounds, {
+    padding: floridaPadding(),
+    maxZoom: 7.2,
+    duration: animate && motionOk() ? 600 : 0,
+  });
 }
 
 function setProjection(next) {
@@ -186,6 +201,7 @@ async function refreshLayer() {
   if (!state.booted) {
     const top = layer.features.reduce((best, row) => (row.value != null && (best == null || row.value > best.value) ? row : best), null);
     if (top) await selectCounty(top.geoid, false);
+    frameFlorida(false);
     state.booted = true;
     const shot = new URLSearchParams(location.search).get("shot");
     if (shot === "ask") {
@@ -196,7 +212,7 @@ async function refreshLayer() {
     } else if (shot === "flat") {
       setProjection("flat");
     } else if (shot === "close") {
-      frameFlorida(false, true);
+      frameFlorida(false);
     } else if (shot === "compare") {
       showTab("compare");
       const miami = state.meta.counties.find((county) => county.name.startsWith("Miami-Dade"));
@@ -209,7 +225,7 @@ async function refreshLayer() {
         await loadCompare();
       }
     }
-    document.body.dataset.map = "ready";
+        state.map.once("idle", () => { document.body.dataset.map = "ready"; });
   } else if (state.geoid) {
     highlight(state.geoid);
     loadDetail();
@@ -271,6 +287,7 @@ async function selectCounty(geoid, fly) {
   highlight(geoid);
   showTab("detail");
   if (fly && state.map) {
+    state.flew = true;
     const features = state.map.querySourceFeatures("counties", { filter: ["==", ["get", "geoid"], geoid] });
     if (features[0]) {
       const center = centerOf(features[0]);
@@ -438,7 +455,7 @@ function setYear(year) {
 }
 $("view-globe").addEventListener("click", () => setProjection("globe"));
 $("view-flat").addEventListener("click", () => setProjection("flat"));
-$("view-florida").addEventListener("click", () => frameFlorida(true, true));
+$("view-florida").addEventListener("click", () => frameFlorida(true));
 $("county-search").addEventListener("input", (event) => {
   const query = event.target.value.trim().toLowerCase();
   for (const button of $("county-list").querySelectorAll("button")) {

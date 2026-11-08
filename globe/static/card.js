@@ -57,6 +57,45 @@ function projectRing(ring, lon0, lat0) {
   return parts;
 }
 
+function eachCoord(feature, fn) {
+  const walk = (node) => {
+    if (typeof node[0] === "number") fn(node[0], node[1]);
+    else node.forEach(walk);
+  };
+  walk(feature.geometry.coordinates);
+}
+
+function fitFlorida(features, width, height, pad) {
+  const lon0 = -83.8;
+  const lat0 = 27.7;
+  let minX = Infinity;
+  let minY = Infinity;
+  let maxX = -Infinity;
+  let maxY = -Infinity;
+  for (const feature of features) {
+    eachCoord(feature, (lon, lat) => {
+      const point = ortho(lon, lat, lon0, lat0);
+      if (!point.front) return;
+      minX = Math.min(minX, point.x);
+      maxX = Math.max(maxX, point.x);
+      minY = Math.min(minY, point.y);
+      maxY = Math.max(maxY, point.y);
+    });
+  }
+  const spanX = Math.max(maxX - minX, 0.001);
+  const spanY = Math.max(maxY - minY, 0.001);
+  const radius = Math.min((width - pad * 2) / spanX, (height - pad * 2) / spanY);
+  const midX = (minX + maxX) / 2;
+  const midY = (minY + maxY) / 2;
+  return {
+    lon0,
+    lat0,
+    radius,
+    cx: width / 2 - midX * radius,
+    cy: height / 2 + midY * radius,
+  };
+}
+
 function pathFor(feature, lon0, lat0, cx, cy, radius) {
   const parts = ringsOf(feature.geometry).flatMap((ring) => projectRing(ring, lon0, lat0));
   return parts.map((part) => part.map((point, index) => {
@@ -77,29 +116,19 @@ async function draw() {
     fetch("/data/ne_110m_land.geojson").then((res) => res.json()),
     fetch("/api/layer?metric=total_population&year=2024").then((res) => res.json()),
   ]);
-  const lon0 = -83.0;
-  const lat0 = 27.6;
   const svg = document.getElementById("scene");
-  const cx = 320;
-  const cy = 320;
-  const radius = 250;
+  const width = 860;
+  const height = 640;
+  svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+  const jazz = document.body.classList.contains("jazz");
+  const view = fitFlorida(counties.features, width, height, jazz ? 28 : 36);
+  const { lon0, lat0, cx, cy, radius } = view;
   const colors = Object.fromEntries(layer.features.map((row) => [row.geoid, row.color]));
-  const ocean = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-  ocean.setAttribute("cx", cx);
-  ocean.setAttribute("cy", cy);
-  ocean.setAttribute("r", radius);
+  const ocean = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+  ocean.setAttribute("width", width);
+  ocean.setAttribute("height", height);
   ocean.setAttribute("fill", "#0c3558");
   svg.append(ocean);
-  if (document.body.classList.contains("jazz")) {
-    const ring = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-    ring.setAttribute("cx", cx);
-    ring.setAttribute("cy", cy);
-    ring.setAttribute("r", radius + 14);
-    ring.setAttribute("fill", "none");
-    ring.setAttribute("stroke", "#e4c56a");
-    ring.setAttribute("stroke-width", "3");
-    svg.append(ring);
-  }
   for (const feature of land.features) {
     const d = pathFor(feature, lon0, lat0, cx, cy, radius);
     if (!d) continue;
@@ -114,18 +143,22 @@ async function draw() {
     const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
     path.setAttribute("d", d);
     path.setAttribute("fill", colors[feature.properties.geoid] || "#e4c56a");
-    path.setAttribute("stroke", "#1a1404");
-    path.setAttribute("stroke-width", "0.6");
+    path.setAttribute("stroke", "#102033");
+    path.setAttribute("stroke-width", "1.7");
     svg.append(path);
   }
-  const limb = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-  limb.setAttribute("cx", cx);
-  limb.setAttribute("cy", cy);
-  limb.setAttribute("r", radius);
-  limb.setAttribute("fill", "none");
-  limb.setAttribute("stroke", "#f6e7b8");
-  limb.setAttribute("stroke-width", "1.4");
-  svg.append(limb);
+  if (jazz) {
+    const frame = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    frame.setAttribute("x", "12");
+    frame.setAttribute("y", "12");
+    frame.setAttribute("width", String(width - 24));
+    frame.setAttribute("height", String(height - 24));
+    frame.setAttribute("rx", "22");
+    frame.setAttribute("fill", "none");
+    frame.setAttribute("stroke", "#e4c56a");
+    frame.setAttribute("stroke-width", "3");
+    svg.append(frame);
+  }
 
   const y2024 = florida.state.estimates["2024"];
   const growth = florida.state.growth["2019-2024"].population_growth.value;

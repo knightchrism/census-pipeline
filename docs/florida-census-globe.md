@@ -98,4 +98,4 @@ uv run pytest -q
 
 `tests/test_globe.py` checks the export, the router, the disabled adapter, and the loopback server. `tests/test_metrics.py` still runs the warehouse metrics when `data/census.duckdb` is present. On the machine that produced this branch, `uv run pytest -q` reported 57 passed.
 
-Screenshots from that local run are in `globe/catalog/`. The phone-width capture shows the county choropleth on the globe. A wide headless capture sometimes drew the globe limb before every county fill finished; the loopback page itself is the check. The catalog card images are orthographic drawings of the same county file and the same export.
+The opening view fits the whole state — panhandle, peninsula, and Keys — inside the map, on the globe projection. The catalog cards use the same county file, cropped so Florida fills the artwork. Screenshots are in `globe/catalog/`.
