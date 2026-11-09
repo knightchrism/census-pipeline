@@ -149,6 +149,9 @@ def test_historical_series_has_no_1845_count_and_blocks_counties():
     assert catalog["qc"]["historical_includes_1845_count"] is False
     script = (ROOT / "globe" / "static" / "app.js").read_text()
     assert "county_data === false" in script
+    assert 'setLayoutProperty("ex", "visibility", "none")' in script
+    assert 'setLayoutProperty("fill", "visibility", "none")' in script
+    assert 'setLayoutProperty("ex", "visibility", "visible")' in script
     assert "Frame Florida" not in (ROOT / "globe" / "static" / "index.html").read_text()
 
 

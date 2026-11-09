@@ -723,7 +723,7 @@
       "moe": false,
       "note": "Statewide decennial counts from 1830 through 2020. 1830 and 1840 are territorial. March 3, 1845, when Florida became the 27th state, is marked between the 1840 and 1850 counts. It is not a population. No year between censuses is estimated.",
       "caveat": "Enslaved people were counted in the early federal censuses, and free Black residents were counted. Before 1890, American Indians generally were not counted unless they were considered part of the non-Indian population. The 1870 Southern count is a known undercount; Forstall does not publish a corrected Florida total.",
-      "boundary_note": "The outline on the globe is today's state. Historical county lines are not in this build, and these counts are not drawn on the modern 67 counties.",
+      "boundary_note": "Present-day state outline only. Not a historical boundary and not a population layer.",
       "observations": [
         {
           "year": 1830,

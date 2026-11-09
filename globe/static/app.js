@@ -220,11 +220,17 @@ function paint() {
   const source = sourceById(state.sourceId);
   if (statewideSelected()) {
     state.columnMeters = {};
+    map.setLayoutProperty("fill", "visibility", "none");
+    map.setLayoutProperty("line", "visibility", "none");
+    map.setLayoutProperty("ex", "visibility", "none");
     map.setPaintProperty("fill", "fill-opacity", 0);
     map.setPaintProperty("line", "line-opacity", 0);
-    map.setPaintProperty("state-line", "line-opacity", 1);
-    map.setPaintProperty("ex", "fill-extrusion-color", "#1a3a55");
+    map.setPaintProperty("ex", "fill-extrusion-opacity", 0);
     map.setPaintProperty("ex", "fill-extrusion-height", 0);
+    map.setLayoutProperty("state-line", "visibility", "visible");
+    map.setPaintProperty("state-line", "line-opacity", 1);
+    map.setPaintProperty("state-line", "line-width", 1.15);
+    map.setPaintProperty("state-line", "line-color", "#f6e7b8");
     const legend = $("legend");
     legend.replaceChildren();
     const title = document.createElement("b");
@@ -235,12 +241,17 @@ function paint() {
     meta.textContent = obs ? `${obs.status} · ${obs.reference_date}` : "";
     const body = document.createElement("p");
     body.className = "small";
-    body.textContent = source.boundary_note;
+    body.textContent = "Present-day state outline only. Not a historical boundary and not a population layer.";
     legend.append(title, meta, body);
     return;
   }
+  map.setLayoutProperty("fill", "visibility", "visible");
+  map.setLayoutProperty("line", "visibility", "visible");
+  map.setLayoutProperty("ex", "visibility", "visible");
   map.setPaintProperty("fill", "fill-opacity", 0.58);
   map.setPaintProperty("line", "line-opacity", 1);
+  map.setPaintProperty("ex", "fill-extrusion-opacity", 0.86);
+  map.setLayoutProperty("state-line", "visibility", "none");
   map.setPaintProperty("state-line", "line-opacity", 0);
   const values = {};
   state.catalog.counties.forEach((county) => {

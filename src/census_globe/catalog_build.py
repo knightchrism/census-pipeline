@@ -269,8 +269,7 @@ def historical_source(historical: dict) -> dict:
             "The 1870 Southern count is a known undercount; Forstall does not publish a corrected Florida total."
         ),
         "boundary_note": (
-            "The outline on the globe is today's state. Historical county lines are not in this build, "
-            "and these counts are not drawn on the modern 67 counties."
+            "Present-day state outline only. Not a historical boundary and not a population layer."
         ),
         "observations": historical["observations"],
         "statehood": historical["statehood"],
