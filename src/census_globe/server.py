@@ -27,8 +27,10 @@ SECURITY_HEADERS = {
     "Referrer-Policy": "no-referrer",
     "Content-Security-Policy": (
         "default-src 'self'; script-src 'self' blob:; "
-        "worker-src 'self' blob:; style-src 'self'; img-src 'self' data:; connect-src 'self'; "
-        "object-src 'none'; base-uri 'none'; frame-ancestors 'none'"
+        "worker-src 'self' blob:; style-src 'self'; "
+        "img-src 'self' data: blob: https://gibs.earthdata.nasa.gov; "
+        "connect-src 'self' https://gibs.earthdata.nasa.gov; "
+        "object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'none'"
     ),
     "Cache-Control": "no-store",
 }

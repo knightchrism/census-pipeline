@@ -7,6 +7,7 @@ ROOT = Path(__file__).resolve().parents[2]
 DATA_DIR = ROOT / "globe" / "data"
 STATIC_DIR = ROOT / "globe" / "static"
 EXPORT_PATH = DATA_DIR / "florida.json"
+CATALOG_PATH = DATA_DIR / "catalog.json"
 COUNTIES_PATH = DATA_DIR / "fl_counties.geojson"
 LAND_PATH = DATA_DIR / "ne_110m_land.geojson"
 QC_PATH = DATA_DIR / "QC.md"

@@ -250,7 +250,11 @@ def test_server_layer_headers_and_no_sql(store):
         assert len(layer["features"]) == 67
         assert headers["X-Content-Type-Options"] == "nosniff"
         assert "Access-Control-Allow-Origin" not in headers
-        assert "script-src 'self'" in headers["Content-Security-Policy"]
+        policy = headers["Content-Security-Policy"]
+        assert "script-src 'self'" in policy
+        assert "https://gibs.earthdata.nasa.gov" in policy
+        assert "unsafe-eval" not in policy
+        assert "*" not in policy
         status, body = _post(httpd, {"question": "drop table main.dim_county"})
         assert status == 200
         assert body["llm"]["live"] is False

@@ -4,7 +4,7 @@ Local viewer for the 67 Florida counties already modeled by this pipeline. It is
 
 ## What you can see
 
-- MapLibre GL JS 5.6.1 draws the counties on a globe (a flat map toggle is in the same view).
+- MapLibre GL JS 5.24.0 draws the counties on a globe over NASA GIBS Blue Marble (a flat map toggle is in the same view). Column height is the selected statistic, not terrain.
 - Layers are the governed metrics in `semantic/metrics.yml`: population, median household income, median age, Hispanic share, population growth, and nominal median household income growth.
 - Class breaks are equal-count groups of the published county values. A missing estimate stays gray. It is not drawn as zero.
 - A county panel shows the estimate, the 90% margin of error when the Bureau published one, the annotation when the margin is absent, and the official state figure beside it.
@@ -96,6 +96,6 @@ See `globe/catalog/INTEGRATION.md`. The catalog application was not reachable fr
 uv run pytest -q
 ```
 
-`tests/test_globe.py` checks the export, the router, the disabled adapter, and the loopback server. `tests/test_metrics.py` still runs the warehouse metrics when `data/census.duckdb` is present. On the machine that produced this branch, `uv run pytest -q` reported 57 passed.
+`tests/test_globe.py` checks the export, the router, the disabled adapter, and the loopback server. `tests/test_catalog.py` checks the Vintage 2025 series, the ACS figures, and that decennial counts were not filled in. `tests/test_metrics.py` still runs the warehouse metrics when `data/census.duckdb` is present. On the machine that produced this branch, `uv run pytest -q` reported 60 passed.
 
-The opening view fits the whole state — panhandle, peninsula, and Keys — inside the map, on the globe projection. The catalog cards use the same county file, cropped so Florida fills the artwork. Screenshots are in `globe/catalog/`.
+The opening view fits the whole state — panhandle, peninsula, and Keys — inside the map. Version 2 adds topic, official source, and year controls. Population uses PEP Vintage 2025 only (July 1, 2020–2025, plus the April 1, 2020 estimates base in that same file). ACS 5-year stays 2019 and 2024. Those series are not mixed. Decennial counts are not loaded: the Data API returned Missing Key and no key was used. The ground image is NASA GIBS Blue Marble. Column height is the selected value scaled among the 67 counties, not terrain. Rebuild with `uv run python -m census_globe.catalog_build` when `data/cache/sources/co-est2025-alldata.csv` is present.
