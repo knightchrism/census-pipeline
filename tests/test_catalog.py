@@ -24,7 +24,12 @@ def test_page_frames_without_a_reset_button():
     html = (ROOT / "globe" / "static" / "index.html").read_text()
     script = (ROOT / "globe" / "static" / "app.js").read_text()
     assert "Frame Florida" not in html
-    assert "app.js?v=3" in html
+    assert "app.js?v=4" in html
+    assert "fl_state_outline" not in script
+    assert "HIDDEN_TOPICS" in script and "hispanic_share" in script
+    assert "historical-statewide" in script
+    assert "Race and ethnicity topics are turned off" in script
+    assert "statewide 1830–2020 census view is turned off" in script
     assert "was not JSON" in (ROOT / "globe" / "static" / "app.js").read_text()
     assert "Startup failed" in (ROOT / "globe" / "static" / "app.js").read_text()
     assert 'id="frame"' not in html
@@ -156,6 +161,18 @@ def test_historical_series_has_no_1845_count_and_blocks_counties():
     assert 'setLayoutProperty("fill", "visibility", "none")' in script
     assert 'setLayoutProperty("ex", "visibility", "visible")' in script
     assert "Frame Florida" not in (ROOT / "globe" / "static" / "index.html").read_text()
+
+
+def test_viewer_hides_topics_without_deleting_source_rows():
+    catalog = __import__("json").loads(CATALOG_PATH.read_text())
+    topic_ids = {item["id"] for item in catalog["topics"]}
+    assert {"hispanic_population", "hispanic_share", "population", "income", "age"} <= topic_ids
+    historical = next(item for item in catalog["sources"] if item["id"] == "historical-statewide")
+    assert historical["observations"][0]["population"] == 34730
+    assert catalog["counties"][0]["acs5"]["2024"]["hispanic_share"]["value"] is not None
+    script = (ROOT / "globe" / "static" / "app.js").read_text()
+    assert "shownTopics" in script and "shownSourceIds" in script
+    assert "loadJson(ROOT + \"data/fl_state_outline.geojson\")" not in script
 
 
 def test_unmapped_historical_observation_is_not_called_verified():

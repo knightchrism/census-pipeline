@@ -3,6 +3,8 @@ const ROOT = new URL("../", document.currentScript.src).href;
 const $ = (id) => document.getElementById(id);
 const GIBS = "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/BlueMarble_NextGeneration/default/GoogleMapsCompatible_Level8/{z}/{y}/{x}.jpeg";
 const RAMP = ["#1f4f78", "#4e7ea3", "#c4a15a", "#e4c56a", "#ffe7a3"];
+const HIDDEN_TOPICS = new Set(["hispanic_population", "hispanic_share"]);
+const HIDDEN_SOURCES = new Set(["historical-statewide"]);
 const state = { catalog: null, topic: "population", sourceId: "pep-v2025-july1", year: 2025, geoid: null, globe: true };
 
 function fmt(unit, value) {
@@ -16,6 +18,8 @@ function fmt(unit, value) {
 }
 function sourceById(id) { return state.catalog.sources.find((item) => item.id === id); }
 function topicById(id) { return state.catalog.topics.find((item) => item.id === id); }
+function shownTopics() { return state.catalog.topics.filter((item) => !HIDDEN_TOPICS.has(item.id)); }
+function shownSourceIds(topic) { return topic.sources.filter((id) => !HIDDEN_SOURCES.has(id) && !HIDDEN_TOPICS.has(id)); }
 function acsUnit(metric) {
   return { total_population: "people", median_household_income: "USD", median_age: "years", hispanic_population: "people", hispanic_share: "ratio" }[metric];
 }
@@ -441,19 +445,21 @@ function renderCitation(source) {
 function fillSelectors() {
   const topic = $("topic");
   topic.innerHTML = "";
-  state.catalog.topics.forEach((item) => topic.add(new Option(item.label, item.id)));
+  const topics = shownTopics();
+  if (!topics.some((item) => item.id === state.topic)) state.topic = topics[0].id;
+  topics.forEach((item) => topic.add(new Option(item.label, item.id)));
   topic.value = state.topic;
   const chosen = topicById(state.topic);
   const source = $("source");
   source.innerHTML = "";
-  chosen.sources.forEach((id) => {
+  shownSourceIds(chosen).forEach((id) => {
     const item = sourceById(id);
     const option = new Option(item.loaded ? item.short : item.short + " (not in this build)", item.id);
     option.disabled = !item.loaded;
     source.add(option);
   });
-  if (!sourceById(state.sourceId).loaded || !chosen.sources.includes(state.sourceId)) {
-    state.sourceId = chosen.sources.find((id) => sourceById(id).loaded);
+  if (!sourceById(state.sourceId).loaded || !shownSourceIds(chosen).includes(state.sourceId)) {
+    state.sourceId = shownSourceIds(chosen).find((id) => sourceById(id).loaded);
   }
   source.value = state.sourceId;
   const spec = sourceById(state.sourceId);
@@ -472,7 +478,7 @@ function fillSelectors() {
   $("badge").textContent = spec.short;
   $("source-note").textContent = spec.note;
   renderCitation(spec);
-  const blocked = state.catalog.sources.filter((item) => chosen.sources.includes(item.id) && !item.loaded);
+  const blocked = state.catalog.sources.filter((item) => shownSourceIds(chosen).includes(item.id) && !item.loaded);
   const unavailable = $("unavailable");
   unavailable.hidden = blocked.length === 0;
   unavailable.textContent = blocked.length
@@ -500,32 +506,30 @@ function ask(question) {
   if (text.length > 480) return "Question is limited to 480 characters.";
   if (/\b(select|insert|update|delete|drop|alter)\b/i.test(text)) return "This panel does not run SQL.";
   const q = text.toLowerCase();
+  if (/\b(hispanic|latino|latina|latinx|race|ethnicity|racial)\b/.test(q)) {
+    return "Race and ethnicity topics are turned off in this view. Population, income, and age are still available.";
+  }
   let topic = state.topic;
+  if (HIDDEN_TOPICS.has(topic)) topic = "population";
   if (q.includes("income")) topic = "income";
   else if (q.includes("age")) topic = "age";
-  else if (q.includes("hispanic") && q.includes("share")) topic = "hispanic_share";
-  else if (q.includes("hispanic")) topic = "hispanic_population";
   else if (q.includes("population") || q.includes("people")) topic = "population";
-  if (/\b1845\b/.test(text) && topic === "population") {
-    return "March 3, 1845 is when Florida became the 27th state. There is no Census population for that day. The nearest counts are 1840 (territory) and 1850 (state). Nothing is estimated for 1845.";
-  }
   const specTopic = topicById(topic);
-  let source = specTopic.sources.includes(state.sourceId) && sourceById(state.sourceId).loaded
+  const allowedSources = shownSourceIds(specTopic);
+  let source = allowedSources.includes(state.sourceId) && sourceById(state.sourceId).loaded
     ? sourceById(state.sourceId)
-    : sourceById(specTopic.sources.find((id) => sourceById(id).loaded));
+    : sourceById(allowedSources.find((id) => sourceById(id).loaded));
   const yearMatch = text.match(/\b(18[3-9]0|19[0-9]0|2000|2010|2019|202[0-5])\b/);
   if (yearMatch && topic === "population" && !source.years.map(String).includes(yearMatch[1])) {
-    const historical = sourceById("historical-statewide");
-    if (historical && historical.years.map(String).includes(yearMatch[1])) source = historical;
+    const decennial = sourceById("decennial-april1");
+    if (decennial && decennial.years.map(String).includes(yearMatch[1])) source = decennial;
+    else if ((sourceById("historical-statewide") || { years: [] }).years.map(String).includes(yearMatch[1])) {
+      return "The statewide 1830–2020 census view is turned off. County population, income, age, and the 2010 and 2020 county counts are still available.";
+    }
   }
   const named = state.catalog.counties.find((county) => q.includes(county.name.toLowerCase().replace(" county", "")));
-  if (source.county_data === false && named) {
-    return `${named.name} has no figure in the statewide historical series. County counts for that year are not loaded, and today's 67-county map is not used.`;
-  }
   const wantsState = /\bflorida\b/.test(q) && !named;
-  const place = source.county_data === false
-    ? state.catalog.state
-    : (named || (wantsState ? state.catalog.state : state.catalog.counties.find((county) => county.geoid === state.geoid) || state.catalog.state));
+  const place = named || (wantsState ? state.catalog.state : state.catalog.counties.find((county) => county.geoid === state.geoid) || state.catalog.state);
   const year = yearMatch && source.years.map(String).includes(yearMatch[1]) ? Number(yearMatch[1]) : state.year;
   if (!source.years.map(String).includes(String(year))) {
     return `${source.label} is not loaded for ${yearMatch ? yearMatch[1] : "that year"}. Loaded years: ${source.years.join(", ")}.`;
@@ -570,11 +574,10 @@ function startupFailed(error) {
 }
 
 async function boot() {
-  let catalog, counties, outline;
+  let catalog, counties;
   try {
     catalog = await loadJson(ROOT + "data/catalog.json");
     counties = await loadJson(ROOT + "data/fl_counties.geojson");
-    outline = await loadJson(ROOT + "data/fl_state_outline.geojson");
   } catch (error) {
     startupFailed(error);
     return;
@@ -590,7 +593,6 @@ async function boot() {
   map.addControl(new maplibregl.AttributionControl({ compact: true, customAttribution: "Imagery: NASA GIBS · Data: U.S. Census Bureau" }));
   map.on("load", () => {
     map.getSource("counties").setData(counties);
-    map.getSource("stateoutline").setData(outline);
     paint();
     frameFlorida();
     const pick = (event) => {
