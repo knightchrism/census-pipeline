@@ -24,6 +24,9 @@ def test_page_frames_without_a_reset_button():
     html = (ROOT / "globe" / "static" / "index.html").read_text()
     script = (ROOT / "globe" / "static" / "app.js").read_text()
     assert "Frame Florida" not in html
+    assert "app.js?v=3" in html
+    assert "was not JSON" in (ROOT / "globe" / "static" / "app.js").read_text()
+    assert "Startup failed" in (ROOT / "globe" / "static" / "app.js").read_text()
     assert 'id="frame"' not in html
     assert 'id="unavailable"' in html
     assert "warn" not in html.split('id="unavailable"')[0][-40:]

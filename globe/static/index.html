@@ -8,8 +8,8 @@
 <meta name="theme-color" content="#0b1f3a">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob: https://gibs.earthdata.nasa.gov; connect-src 'self' https://gibs.earthdata.nasa.gov; worker-src 'self' blob:; child-src blob:; base-uri 'none'; form-action 'none'">
 <title>Florida Census Globe · GeoKnight GIS</title>
-<link rel="stylesheet" href="static/vendor/maplibre-gl.css">
-<link rel="stylesheet" href="static/app.css">
+<link rel="stylesheet" href="static/vendor/maplibre-gl.css?v=3">
+<link rel="stylesheet" href="static/app.css?v=3">
 </head>
 <body>
 <header class="top">
@@ -18,7 +18,7 @@
   <span class="badge" id="badge">Loading sources…</span>
 </header>
 <main class="app">
-  <div id="map" class="map" role="application" aria-label="Florida counties on a globe"></div>
+  <div id="map" class="map" role="application" aria-label="Florida counties on a globe"><p id="startup" class="startup" hidden></p></div>
   <div class="views" role="group" aria-label="View">
     <button type="button" id="view-globe" class="on">Globe</button>
     <button type="button" id="view-flat">Flat</button>
@@ -59,8 +59,8 @@
     <footer class="foot small muted">© GeoKnight GIS. All rights reserved.</footer>
   </aside>
 </main>
-<script src="static/vendor/maplibre-gl.js"></script>
-<script src="static/app.js"></script>
+<script src="static/vendor/maplibre-gl.js?v=3"></script>
+<script src="static/app.js?v=3"></script>
 <script src="/assets/gk-globes-back.js?v=1" defer></script>
 </body>
 </html>

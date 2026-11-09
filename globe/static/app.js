@@ -538,10 +538,48 @@ function ask(question) {
   return `${who}, ${specTopic.label}, ${source.label}, ${source.reference_date} ${year}: ${fmt(item.unit, item.value)}. ${figure} ${source.note}`;
 }
 
+async function loadJson(url) {
+  let response;
+  try {
+    response = await fetch(url, { credentials: "same-origin", cache: "no-store" });
+  } catch (error) {
+    throw new Error(url + " did not respond. " + (error && error.message ? error.message : "network error"));
+  }
+  const type = response.headers.get("content-type") || "Missing";
+  const text = await response.text();
+  const sample = text.replace(/\s+/g, " ").slice(0, 180);
+  const where = "HTTP " + response.status + ". Final URL " + response.url + ". Content-Type " + type + ". Body: " + sample;
+  if (!response.ok) throw new Error(url + " returned " + where);
+  try {
+    return JSON.parse(text);
+  } catch (error) {
+    throw new Error(url + " was not JSON. " + where);
+  }
+}
+
+function startupFailed(error) {
+  const message = error && error.message ? error.message : String(error);
+  console.error(message);
+  document.body.dataset.map = "failed";
+  $("badge").textContent = "Startup failed";
+  const box = $("startup");
+  box.hidden = false;
+  box.textContent = message;
+  const note = $("source-note");
+  if (note) note.textContent = message;
+}
+
 async function boot() {
-  state.catalog = await fetch(ROOT + "data/catalog.json").then((res) => res.json());
-  const counties = await fetch(ROOT + "data/fl_counties.geojson").then((res) => res.json());
-  const outline = await fetch(ROOT + "data/fl_state_outline.geojson").then((res) => res.json());
+  let catalog, counties, outline;
+  try {
+    catalog = await loadJson(ROOT + "data/catalog.json");
+    counties = await loadJson(ROOT + "data/fl_counties.geojson");
+    outline = await loadJson(ROOT + "data/fl_state_outline.geojson");
+  } catch (error) {
+    startupFailed(error);
+    return;
+  }
+  state.catalog = catalog;
   $("credit").textContent = "Sources in this review build: U.S. Census Bureau Population Estimates Vintage 2025 (July 1, 2020–2025, and the separate April 1, 2020 estimates base), county decennial counts for April 1, 2010 and 2020, statewide decennial counts for 1830–2020 (Forstall 1996 and the 1910–2020 apportionment table), and American Community Survey 5-year 2019 and 2024. Imagery: NASA GIBS Blue Marble. Not endorsed or certified by the Census Bureau or NASA.";
   state.samples = collectSamples(counties);
   state.columnMeters = {};
