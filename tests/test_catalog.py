@@ -2,8 +2,10 @@
 import csv
 import io
 
-from census_globe.catalog_build import build_catalog, comparison_allowed, load_acs, load_decennial, load_pep_v2025
-from census_globe.paths import CATALOG_PATH, DECENNIAL_PATH, EXPORT_PATH, ROOT
+from census_globe.catalog_build import (
+    build_catalog, comparison_allowed, county_display_allowed, load_acs, load_decennial, load_historical, load_pep_v2025,
+)
+from census_globe.paths import CATALOG_PATH, DECENNIAL_PATH, EXPORT_PATH, HISTORICAL_PATH, ROOT
 
 
 def _csv(rows):
@@ -49,7 +51,7 @@ def test_committed_catalog_is_one_pep_vintage_and_reconciles():
     assert catalog["qc"]["acs_years"] == [2019, 2024]
     assert len(catalog["counties"]) == 67
     loaded = {item["id"]: item for item in catalog["sources"] if item["loaded"]}
-    assert set(loaded) == {"pep-v2025-july1", "pep-v2025-april1-base", "acs5", "decennial-april1"}
+    assert set(loaded) == {"pep-v2025-july1", "pep-v2025-april1-base", "acs5", "decennial-april1", "historical-statewide"}
     dec = loaded["decennial-april1"]
     assert dec["kind"] == "count" and dec["years"] == [2010, 2020]
     assert dec["links"]["2010"] == "https://api.census.gov/data/2010/dec/sf1"
@@ -90,7 +92,8 @@ def test_real_pep_file_matches_catalog_when_cached():
     pep = load_pep_v2025(path)
     acs = load_acs(EXPORT_PATH)
     decennial = load_decennial(DECENNIAL_PATH)
-    built = build_catalog(pep, acs, "2026-11-09T00:00:00Z", decennial)
+    historical = load_historical(HISTORICAL_PATH)
+    built = build_catalog(pep, acs, "2026-11-09T00:00:00Z", decennial, historical)
     committed = __import__("json").loads(CATALOG_PATH.read_text())
     assert built["state"]["pep_july1"] == committed["state"]["pep_july1"]
     assert built["counties"][0]["pep_july1"] == committed["counties"][0]["pep_july1"]
@@ -118,3 +121,31 @@ def test_decennial_file_reconciles_and_is_not_the_pep_base():
     pep_miami = next(county["pep_april1_2020_base"] for county in catalog["counties"] if county["geoid"] == "12086")
     assert miami != pep_miami
     assert "key=" not in DECENNIAL_PATH.read_text().lower()
+
+
+def test_historical_series_has_no_1845_count_and_blocks_counties():
+    historical = load_historical(HISTORICAL_PATH)
+    years = [row["year"] for row in historical["observations"]]
+    assert years == list(range(1830, 2021, 10))
+    assert 1845 not in years
+    assert historical["observations"][0]["population"] == 34730
+    assert historical["observations"][1]["population"] == 54477
+    assert historical["observations"][2]["population"] == 87445
+    assert historical["statehood"]["date"] == "1845-03-03"
+    assert historical["statehood"]["not_a_population_observation"] is True
+    assert "population" not in historical["state_census_1845"]
+    catalog = __import__("json").loads(CATALOG_PATH.read_text())
+    source = next(item for item in catalog["sources"] if item["id"] == "historical-statewide")
+    assert source["family"] == "historical_statewide_decennial"
+    assert source["county_data"] is False
+    assert county_display_allowed(source) is False
+    assert county_display_allowed(next(item for item in catalog["sources"] if item["id"] == "decennial-april1")) is True
+    assert comparison_allowed(source, next(item for item in catalog["sources"] if item["id"] == "decennial-april1"))["ok"] is False
+    assert all("historical" not in county for county in catalog["counties"])
+    assert catalog["state"]["decennial"]["2020"] == 21538187
+    assert source["observations"][-1]["population"] == 21538187
+    assert source["observations"][-2]["population"] == 18801310
+    assert catalog["qc"]["historical_includes_1845_count"] is False
+    script = (ROOT / "globe" / "static" / "app.js").read_text()
+    assert "county_data === false" in script
+    assert "Frame Florida" not in (ROOT / "globe" / "static" / "index.html").read_text()

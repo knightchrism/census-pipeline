@@ -30,6 +30,13 @@ button{background:#0a1a31;border:1px solid var(--gold);color:var(--gold2);border
 .legendbox{position:absolute;left:12px;bottom:12px;z-index:5;background:var(--glass);border:1px solid var(--line);border-radius:12px;padding:8px 10px;max-width:280px}
 .swatch{display:flex;gap:8px;align-items:center;margin-top:4px;font-size:.78rem;color:var(--muted)}
 .swatch i{width:16px;height:10px;border-radius:2px;display:inline-block}
+.timeline{display:flex;flex-flow:row nowrap;gap:2px;overflow-x:auto;padding:8px 0 2px;align-items:flex-end}
+.tick{flex:0 0 auto;width:42px;text-align:center;font-size:.62rem;color:var(--muted);line-height:1.2}
+.tick b{display:block;width:8px;height:8px;border-radius:50%;margin:0 auto 4px;background:#4e7ea3}
+.tick.on{color:var(--gold2);font-weight:700}
+.tick.on b{background:var(--gold);width:11px;height:11px}
+.tick.event{width:58px}
+.tick.event b{background:transparent;border:1px solid var(--gold);border-radius:1px;transform:rotate(45deg);width:8px;height:8px}
 .tip{position:fixed;z-index:40;pointer-events:none;background:rgba(5,13,28,.95);border:1px solid var(--line);border-radius:8px;padding:6px 9px;font-size:.8rem;max-width:260px}
 .foot{padding-top:14px;text-align:center}
 .maplibregl-ctrl-group{background:var(--glass)!important;border:1px solid var(--line)}

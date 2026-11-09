@@ -156,6 +156,127 @@ def load_decennial(path: Path) -> dict:
     }
 
 
+HISTORICAL_TOTALS = {
+    1830: 34730, 1840: 54477, 1850: 87445, 1860: 140424, 1870: 187748,
+    1880: 269493, 1890: 391422, 1900: 528542, 1910: 752619, 1920: 968470,
+    1930: 1468211, 1940: 1897414, 1950: 2771305, 1960: 4951560, 1970: 6789443,
+    1980: 9746324, 1990: 12937926, 2000: 15982378, 2010: 18801310, 2020: 21538187,
+}
+
+
+def load_historical(path: Path) -> dict:
+    """Statewide decennial counts, 1830–2020. Rejects an invented 1845 population."""
+    payload = json.loads(path.read_text())
+    rows = payload["statewide_decennial_series"]
+    years = [row["year"] for row in rows]
+    if years != list(range(1830, 2021, 10)):
+        raise ValueError("historical series must be the decennial years 1830 through 2020")
+    if any(row["year"] == 1845 or "1845" in str(row.get("population")) for row in rows):
+        raise ValueError("1845 must not be a population observation")
+    statehood = payload["statehood"]
+    if statehood.get("date") != "1845-03-03" or not statehood.get("not_a_population_observation"):
+        raise ValueError("statehood must stay an event, not a count")
+    if statehood.get("bracketing_federal_censuses") != {"before": 1840, "after": 1850}:
+        raise ValueError("statehood must sit between the 1840 and 1850 censuses")
+    census_1845 = payload["state_census_1845"]
+    if "population" in census_1845 or census_1845.get("no_invented_statewide_total_saved_here") is not True:
+        raise ValueError("1845 state census must not carry a statewide total")
+    observations = []
+    previous = 0
+    for row in rows:
+        year = row["year"]
+        population = row["population"]
+        if population != HISTORICAL_TOTALS[year] or not isinstance(population, int) or population <= previous:
+            raise ValueError(f"historical total for {year} failed validation")
+        if row["status"] not in {"territory", "state"}:
+            raise ValueError(f"missing territory/state status for {year}")
+        if year < 1850 and row["status"] != "territory":
+            raise ValueError(f"{year} is territorial")
+        if year >= 1850 and row["status"] != "state":
+            raise ValueError(f"{year} is a state census")
+        observations.append({
+            "year": year,
+            "population": population,
+            "status": row["status"],
+            "reference_date": row["reference_date"],
+            "source_id": row["source_id"],
+        })
+        previous = population
+    text = path.read_text()
+    if "key=" in text.lower() or "REDACTED" in text:
+        raise ValueError("historical file must not contain an API key")
+    return {
+        "observations": observations,
+        "statehood": {
+            "date": "1845-03-03",
+            "event": statehood["event"],
+            "not_a_population_observation": True,
+            "before": 1840,
+            "after": 1850,
+            "sources": [{"org": item["org"], "url": item["url"]} for item in statehood["sources"]],
+        },
+        "state_census_1845": {
+            "series": census_1845["official_archive"]["series"],
+            "url": census_1845["official_archive"]["url"],
+            "note": census_1845["reason"],
+        },
+        "caveats": payload["caveats"],
+        "sources": {
+            key: {k: value[k] for k in ("title", "publisher", "url", "sha256", "used_for_years") if k in value}
+            for key, value in payload["sources"].items()
+        },
+        "sha256": _sha256(path),
+        "bytes": path.stat().st_size,
+    }
+
+
+def historical_source(historical: dict) -> dict:
+    return {
+        "id": "historical-statewide",
+        "loaded": True,
+        "family": "historical_statewide_decennial",
+        "kind": "count",
+        "granularity": "state",
+        "county_data": False,
+        "topic": "population",
+        "label": "Historical statewide census count",
+        "short": "Statewide census, 1830–2020",
+        "reference_date": "Census day",
+        "years": [row["year"] for row in historical["observations"]],
+        "metric": "population",
+        "unit": "people",
+        "moe": False,
+        "note": (
+            "Statewide decennial counts from 1830 through 2020. 1830 and 1840 are territorial. "
+            "March 3, 1845, when Florida became the 27th state, is marked between the 1840 and 1850 counts. "
+            "It is not a population. No year between censuses is estimated."
+        ),
+        "caveat": (
+            "Enslaved people were counted in the early federal censuses, and free Black residents were counted. "
+            "Before 1890, American Indians generally were not counted unless they were considered part of the non-Indian population. "
+            "The 1870 Southern count is a known undercount; Forstall does not publish a corrected Florida total."
+        ),
+        "boundary_note": (
+            "The outline on the globe is today's state. Historical county lines are not in this build, "
+            "and these counts are not drawn on the modern 67 counties."
+        ),
+        "observations": historical["observations"],
+        "statehood": historical["statehood"],
+        "state_census_1845": historical["state_census_1845"],
+        "links": {
+            "forstall1996": historical["sources"]["forstall1996"]["url"],
+            "apportionment_1910_2020": historical["sources"]["census_apportionment_change_1910_2020"]["url"],
+            "statehood": historical["statehood"]["sources"][0]["url"],
+        },
+        "retrieval": {"sha256": historical["sha256"], "bytes": historical["bytes"]},
+    }
+
+
+def county_display_allowed(source: dict) -> bool:
+    """Historical statewide counts have no county figures to draw."""
+    return bool(source.get("loaded") and source.get("county_data", True))
+
+
 def decennial_source(decennial: dict, provenance: dict | None) -> dict:
     """Loaded April 1 census counts. Separate from the PEP estimates base."""
     requests = []
@@ -219,7 +340,7 @@ def comparison_allowed(left: dict, right: dict) -> dict:
     return {"ok": True, "reason": "Same source, geography, and reference-date family."}
 
 
-def build_catalog(pep: dict, acs: dict, generated_at: str, decennial: dict, provenance: dict | None = None) -> dict:
+def build_catalog(pep: dict, acs: dict, generated_at: str, decennial: dict, historical: dict, provenance: dict | None = None) -> dict:
     by_geo = {row["geoid"]: row for row in pep["counties"]}
     acs_by_geo = {row["geoid"]: row for row in acs["counties"]}
     if set(by_geo) != set(acs_by_geo):
@@ -228,6 +349,11 @@ def build_catalog(pep: dict, acs: dict, generated_at: str, decennial: dict, prov
         raise ValueError("Decennial and PEP county GEOIDs differ")
     if decennial["state"]["2020"] == pep["state"]["april1_2020_base"]:
         raise ValueError("2020 census count must stay distinct from the PEP estimates base")
+    by_hist = {row["year"]: row["population"] for row in historical["observations"]}
+    if by_hist[2010] != decennial["state"]["2010"] or by_hist[2020] != decennial["state"]["2020"]:
+        raise ValueError("historical 2010/2020 statewide totals differ from the county decennial counts")
+    if 1845 in by_hist:
+        raise ValueError("historical series must not include 1845")
     places = []
     for geoid in sorted(by_geo):
         pep_row = by_geo[geoid]
@@ -317,12 +443,13 @@ def build_catalog(pep: dict, acs: dict, generated_at: str, decennial: dict, prov
             "retrieval": {"acs_export_generated_at": acs["generated_at"]},
         },
         decennial_source(decennial, provenance),
+        historical_source(historical),
     ]
     topics = [
         {
             "id": "population",
             "label": "Population",
-            "sources": ["pep-v2025-july1", "pep-v2025-april1-base", "acs5", "decennial-april1"],
+            "sources": ["pep-v2025-july1", "pep-v2025-april1-base", "acs5", "decennial-april1", "historical-statewide"],
             "acs_metric": "total_population",
         },
         {"id": "income", "label": "Median household income", "sources": ["acs5"], "acs_metric": "median_household_income"},
@@ -348,12 +475,16 @@ def build_catalog(pep: dict, acs: dict, generated_at: str, decennial: dict, prov
             "decennial_2020_state": decennial["state"]["2020"],
             "decennial_2010_state": decennial["state"]["2010"],
             "decennial_2020_differs_from_pep_april1_base": True,
+            "historical_years": [row["year"] for row in historical["observations"]],
+            "historical_includes_1845_count": False,
+            "historical_county_data": False,
         },
         "source_years": [
-            {"id": "pep-v2025-july1", "kind": "estimate", "years": [2020, 2021, 2022, 2023, 2024, 2025], "reference_date": "July 1"},
-            {"id": "pep-v2025-april1-base", "kind": "estimate", "years": [2020], "reference_date": "April 1, 2020"},
-            {"id": "acs5", "kind": "estimate", "years": [2019, 2024], "reference_date": "5-year period"},
-            {"id": "decennial-april1", "kind": "count", "years": [2010, 2020], "reference_date": "April 1"},
+            {"id": "pep-v2025-july1", "kind": "estimate", "granularity": "county", "years": [2020, 2021, 2022, 2023, 2024, 2025], "reference_date": "July 1"},
+            {"id": "pep-v2025-april1-base", "kind": "estimate", "granularity": "county", "years": [2020], "reference_date": "April 1, 2020"},
+            {"id": "acs5", "kind": "estimate", "granularity": "county", "years": [2019, 2024], "reference_date": "5-year period"},
+            {"id": "decennial-april1", "kind": "count", "granularity": "county", "years": [2010, 2020], "reference_date": "April 1"},
+            {"id": "historical-statewide", "kind": "count", "granularity": "state", "years": [row["year"] for row in historical["observations"]], "reference_date": "Census day"},
         ],
         "map": {
             "ground": "NASA GIBS Blue Marble Next Generation",
@@ -364,15 +495,17 @@ def build_catalog(pep: dict, acs: dict, generated_at: str, decennial: dict, prov
 
 
 def main() -> None:
-    from .paths import CATALOG_PATH, DECENNIAL_PATH, DECENNIAL_PROVENANCE_PATH, EXPORT_PATH, ROOT
+    from .paths import CATALOG_PATH, DECENNIAL_PATH, DECENNIAL_PROVENANCE_PATH, EXPORT_PATH, HISTORICAL_PATH, ROOT
     pep = ROOT / "data" / "cache" / "sources" / "co-est2025-alldata.csv"
     if not pep.exists():
         raise SystemExit(f"missing {pep}")
-    catalog = write_catalog(pep, EXPORT_PATH, DECENNIAL_PATH, DECENNIAL_PROVENANCE_PATH, CATALOG_PATH)
+    catalog = write_catalog(pep, EXPORT_PATH, DECENNIAL_PATH, DECENNIAL_PROVENANCE_PATH, HISTORICAL_PATH, CATALOG_PATH)
     print(f"wrote {CATALOG_PATH} counties={catalog['qc']['pep_county_count']}")
 
 
-def write_catalog(pep_csv: Path, acs_json: Path, decennial_json: Path, provenance_json: Path, dest: Path) -> dict:
+def write_catalog(
+    pep_csv: Path, acs_json: Path, decennial_json: Path, provenance_json: Path, historical_json: Path, dest: Path,
+) -> dict:
     generated_at = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
     provenance = json.loads(provenance_json.read_text()) if provenance_json.exists() else None
     catalog = build_catalog(
@@ -380,6 +513,7 @@ def write_catalog(pep_csv: Path, acs_json: Path, decennial_json: Path, provenanc
         load_acs(acs_json),
         generated_at,
         load_decennial(decennial_json),
+        load_historical(historical_json),
         provenance,
     )
     dest.write_text(json.dumps(catalog, indent=2) + "\n")

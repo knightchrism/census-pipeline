@@ -123,7 +123,7 @@ On Windows, clone to a local folder such as `C:\dev\census-pipeline` (keep proje
 
 ## Florida census globe
 
-A local navy-and-gold globe of the 67 Florida counties. Population estimates are PEP Vintage 2025 (July 1, 2020–2025, and the separate April 1, 2020 estimates base). Decennial counts are April 1, 2010 and April 1, 2020. ACS 5-year 2019 and 2024 stay on the governed marts. The ask panel reads the loaded series only. The language-model adapter is **disabled** until a local LLM Lab contract is confirmed. See [docs/florida-census-globe.md](docs/florida-census-globe.md).
+A local navy-and-gold globe of the 67 Florida counties. Population estimates are PEP Vintage 2025 (July 1, 2020–2025, and the separate April 1, 2020 estimates base). Decennial counts are April 1, 2010 and April 1, 2020, for counties, plus a statewide series from 1830 through 2020. Statehood on March 3, 1845 is marked between the 1840 and 1850 counts and is not given a population. ACS 5-year 2019 and 2024 stay on the governed marts. The ask panel reads the loaded series only. The language-model adapter is **disabled** until a local LLM Lab contract is confirmed. See [docs/florida-census-globe.md](docs/florida-census-globe.md).
 
 ```bash
 uv run census-ingest --source summary_file --years 2019 2024

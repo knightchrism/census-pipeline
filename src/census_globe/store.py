@@ -6,7 +6,7 @@ from functools import lru_cache
 
 from .classify import classify
 from .format import format_moe, format_value, period_label
-from .paths import CATALOG_PATH, COUNTIES_PATH, EXPORT_PATH, LAND_PATH
+from .paths import CATALOG_PATH, COUNTIES_PATH, EXPORT_PATH, LAND_PATH, STATE_OUTLINE_PATH
 
 LAYER_ORDER = (
     "total_population",
@@ -203,6 +203,7 @@ def data_file(name: str):
     allowed = {
         "florida.json": EXPORT_PATH,
         "fl_counties.geojson": COUNTIES_PATH,
+        "fl_state_outline.geojson": STATE_OUTLINE_PATH,
         "ne_110m_land.geojson": LAND_PATH,
         "catalog.json": CATALOG_PATH,
     }
