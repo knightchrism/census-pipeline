@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-09T00:16:46Z",
+  "generated_at": "2026-11-09T00:40:42Z",
   "topics": [
     {
       "id": "population",
@@ -64,6 +64,7 @@
         2024,
         2025
       ],
+      "kind": "estimate",
       "metric": "population",
       "unit": "people",
       "moe": false,
@@ -73,7 +74,7 @@
         "file": "https://www2.census.gov/programs-surveys/popest/datasets/2020-2025/counties/totals/co-est2025-alldata.csv"
       },
       "retrieval": {
-        "retrieved_for_build": "2026-11-09T00:16:46Z",
+        "retrieved_for_build": "2026-11-09T00:40:42Z",
         "sha256": "4f5a499d851e2cb48fd7a5405e5a9235453a8a66933657aacd10df0e264f35d5",
         "bytes": 2071735,
         "user_agent": "GeoKnightGIS-census-pipeline/1.0 (Florida census source catalog; contact: info@geoknightgis.com)"
@@ -91,6 +92,7 @@
       "years": [
         2020
       ],
+      "kind": "estimate",
       "metric": "population",
       "unit": "people",
       "moe": false,
@@ -100,7 +102,7 @@
         "file": "https://www2.census.gov/programs-surveys/popest/datasets/2020-2025/counties/totals/co-est2025-alldata.csv"
       },
       "retrieval": {
-        "retrieved_for_build": "2026-11-09T00:16:46Z",
+        "retrieved_for_build": "2026-11-09T00:40:42Z",
         "sha256": "4f5a499d851e2cb48fd7a5405e5a9235453a8a66933657aacd10df0e264f35d5",
         "bytes": 2071735
       }
@@ -112,6 +114,7 @@
       "topic": "demographics",
       "label": "ACS 5-year estimates",
       "short": "ACS 5-year",
+      "kind": "estimate",
       "reference_date": "5-year period",
       "years": [
         2019,
@@ -139,21 +142,70 @@
     },
     {
       "id": "decennial-april1",
-      "loaded": false,
+      "loaded": true,
       "family": "decennial_april1",
-      "label": "Decennial census (April 1)",
-      "reason": "Not loaded. The Census Data API variable pages confirmed 2020 PL P1_001N and 2010 SF1 P001001, but county queries returned Missing Key. No API key was supplied and no counts were filled in.",
+      "kind": "count",
+      "topic": "population",
+      "label": "Decennial census count, April 1",
+      "short": "Decennial census count",
+      "reference_date": "April 1",
+      "years": [
+        2010,
+        2020
+      ],
+      "metric": "population",
+      "unit": "people",
+      "moe": false,
+      "note": "April 1 census counts: 2010 Summary File 1 P001001 and 2020 PL 94-171 P1_001N. These are counts, not estimates. The 2020 count is not the Vintage 2025 April 1 estimates base.",
       "links": {
         "documentation": "https://www.census.gov/data/developers/data-sets/decennial-census.html",
-        "2020": "https://api.census.gov/data/2020/dec/pl?get=NAME,P1_001N&for=county:*&in=state:12",
-        "2010": "https://api.census.gov/data/2010/dec/sf1?get=NAME,P001001&for=county:*&in=state:12"
+        "2020": "https://api.census.gov/data/2020/dec/pl",
+        "2010": "https://api.census.gov/data/2010/dec/sf1",
+        "2010_examples": "https://api.census.gov/data/2010/dec/sf1/examples.html"
       },
       "variables": {
         "2010": "P001001",
         "2020": "P1_001N"
       },
-      "reference_date": "April 1",
-      "short": "Decennial census"
+      "retrieval": {
+        "sha256": "60b482005c5e6711b2589417251e62fce0f825dc9d76495b121bb6a793d5ef9a",
+        "bytes": 24600,
+        "requests": [
+          {
+            "dataset": "2020/dec/pl",
+            "variable": "P1_001N",
+            "reference_date": "2020-04-01",
+            "http_status": 200,
+            "sha256": "b4819e393c2314fea90c117ebd039e28be93e0da3aeb657d6062403dc5a53570",
+            "retrieved_at_utc": "2026-11-09T00:34:27Z"
+          },
+          {
+            "dataset": "2020/dec/pl",
+            "variable": "P1_001N",
+            "reference_date": "2020-04-01",
+            "http_status": 200,
+            "sha256": "949851d9990e490a542a17ff3321cdffa739734ded2a0222f2de5b3106f764b9",
+            "retrieved_at_utc": "2026-11-09T00:35:01Z"
+          },
+          {
+            "dataset": "2010/dec/sf1",
+            "variable": "P001001",
+            "reference_date": "2010-04-01",
+            "http_status": 200,
+            "sha256": "d352c812132d89be81c73a289284245caf4dd85d780bc0a8e9f6da4d5209b413",
+            "retrieved_at_utc": "2026-11-09T00:36:24Z"
+          },
+          {
+            "dataset": "2010/dec/sf1",
+            "variable": "P001001",
+            "reference_date": "2010-04-01",
+            "http_status": 200,
+            "sha256": "56f00fee92f0fba8450b7ac120b84363e877589f91689ce5a39a50fa80a2fc49",
+            "retrieved_at_utc": "2026-11-09T00:36:59Z"
+          }
+        ],
+        "api_key_in_repository": false
+      }
     }
   ],
   "state": {
@@ -167,6 +219,10 @@
       "2025": 23462518
     },
     "pep_april1_2020_base": 21538207,
+    "decennial": {
+      "2010": 18801310,
+      "2020": 21538187
+    },
     "acs5": {
       "2019": {
         "total_population": {
@@ -247,6 +303,10 @@
         "2025": 290028
       },
       "pep_april1_2020_base": 278478,
+      "decennial": {
+        "2010": 247336,
+        "2020": 278468
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -326,6 +386,10 @@
         "2025": 29737
       },
       "pep_april1_2020_base": 28259,
+      "decennial": {
+        "2010": 27115,
+        "2020": 28259
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -405,6 +469,10 @@
         "2025": 204479
       },
       "pep_april1_2020_base": 175226,
+      "decennial": {
+        "2010": 168852,
+        "2020": 175216
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -484,6 +552,10 @@
         "2025": 28307
       },
       "pep_april1_2020_base": 28300,
+      "decennial": {
+        "2010": 28520,
+        "2020": 28303
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -563,6 +635,10 @@
         "2025": 663982
       },
       "pep_april1_2020_base": 606616,
+      "decennial": {
+        "2010": 543376,
+        "2020": 606612
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -642,6 +718,10 @@
         "2025": 2013317
       },
       "pep_april1_2020_base": 1944376,
+      "decennial": {
+        "2010": 1748066,
+        "2020": 1944375
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -721,6 +801,10 @@
         "2025": 13289
       },
       "pep_april1_2020_base": 13641,
+      "decennial": {
+        "2010": 14625,
+        "2020": 13648
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -800,6 +884,10 @@
         "2025": 217212
       },
       "pep_april1_2020_base": 186823,
+      "decennial": {
+        "2010": 159978,
+        "2020": 186847
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -879,6 +967,10 @@
         "2025": 171666
       },
       "pep_april1_2020_base": 153843,
+      "decennial": {
+        "2010": 141236,
+        "2020": 153843
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -958,6 +1050,10 @@
         "2025": 239593
       },
       "pep_april1_2020_base": 218249,
+      "decennial": {
+        "2010": 190865,
+        "2020": 218245
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -1037,6 +1133,10 @@
         "2025": 417131
       },
       "pep_april1_2020_base": 375763,
+      "decennial": {
+        "2010": 321520,
+        "2020": 375752
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -1116,6 +1216,10 @@
         "2025": 74094
       },
       "pep_april1_2020_base": 69703,
+      "decennial": {
+        "2010": 67531,
+        "2020": 69698
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -1195,6 +1299,10 @@
         "2025": 37078
       },
       "pep_april1_2020_base": 33979,
+      "decennial": {
+        "2010": 34862,
+        "2020": 33976
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -1274,6 +1382,10 @@
         "2025": 18038
       },
       "pep_april1_2020_base": 16757,
+      "decennial": {
+        "2010": 16422,
+        "2020": 16759
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -1353,6 +1465,10 @@
         "2025": 1062963
       },
       "pep_april1_2020_base": 995569,
+      "decennial": {
+        "2010": 864263,
+        "2020": 995567
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -1432,6 +1548,10 @@
         "2025": 333834
       },
       "pep_april1_2020_base": 321905,
+      "decennial": {
+        "2010": 297619,
+        "2020": 321905
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -1511,6 +1631,10 @@
         "2025": 140360
       },
       "pep_april1_2020_base": 115378,
+      "decennial": {
+        "2010": 95696,
+        "2020": 115378
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -1590,6 +1714,10 @@
         "2025": 13029
       },
       "pep_april1_2020_base": 12450,
+      "decennial": {
+        "2010": 11549,
+        "2020": 12451
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -1669,6 +1797,10 @@
         "2025": 44298
       },
       "pep_april1_2020_base": 43823,
+      "decennial": {
+        "2010": 46389,
+        "2020": 43826
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -1748,6 +1880,10 @@
         "2025": 20488
       },
       "pep_april1_2020_base": 17860,
+      "decennial": {
+        "2010": 16939,
+        "2020": 17864
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -1827,6 +1963,10 @@
         "2025": 13270
       },
       "pep_april1_2020_base": 12128,
+      "decennial": {
+        "2010": 12884,
+        "2020": 12126
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -1906,6 +2046,10 @@
         "2025": 15943
       },
       "pep_april1_2020_base": 14198,
+      "decennial": {
+        "2010": 15863,
+        "2020": 14192
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -1985,6 +2129,10 @@
         "2025": 14180
       },
       "pep_april1_2020_base": 14004,
+      "decennial": {
+        "2010": 14799,
+        "2020": 14004
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -2064,6 +2212,10 @@
         "2025": 25932
       },
       "pep_april1_2020_base": 25326,
+      "decennial": {
+        "2010": 27731,
+        "2020": 25327
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -2143,6 +2295,10 @@
         "2025": 48276
       },
       "pep_april1_2020_base": 39623,
+      "decennial": {
+        "2010": 39140,
+        "2020": 39619
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -2222,6 +2378,10 @@
         "2025": 221701
       },
       "pep_april1_2020_base": 194510,
+      "decennial": {
+        "2010": 172778,
+        "2020": 194515
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -2301,6 +2461,10 @@
         "2025": 111122
       },
       "pep_april1_2020_base": 101234,
+      "decennial": {
+        "2010": 98786,
+        "2020": 101235
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -2380,6 +2544,10 @@
         "2025": 1574115
       },
       "pep_april1_2020_base": 1459773,
+      "decennial": {
+        "2010": 1229226,
+        "2020": 1459762
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -2459,6 +2627,10 @@
         "2025": 20119
       },
       "pep_april1_2020_base": 19661,
+      "decennial": {
+        "2010": 19927,
+        "2020": 19653
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -2538,6 +2710,10 @@
         "2025": 172799
       },
       "pep_april1_2020_base": 159794,
+      "decennial": {
+        "2010": 138028,
+        "2020": 159788
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -2617,6 +2793,10 @@
         "2025": 49629
       },
       "pep_april1_2020_base": 47318,
+      "decennial": {
+        "2010": 49746,
+        "2020": 47319
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -2696,6 +2876,10 @@
         "2025": 16007
       },
       "pep_april1_2020_base": 14512,
+      "decennial": {
+        "2010": 14761,
+        "2020": 14510
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -2775,6 +2959,10 @@
         "2025": 8792
       },
       "pep_april1_2020_base": 8228,
+      "decennial": {
+        "2010": 8870,
+        "2020": 8226
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -2854,6 +3042,10 @@
         "2025": 456068
       },
       "pep_april1_2020_base": 383959,
+      "decennial": {
+        "2010": 297052,
+        "2020": 383956
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -2933,6 +3125,10 @@
         "2025": 875607
       },
       "pep_april1_2020_base": 760827,
+      "decennial": {
+        "2010": 618754,
+        "2020": 760822
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -3012,6 +3208,10 @@
         "2025": 299048
       },
       "pep_april1_2020_base": 292205,
+      "decennial": {
+        "2010": 275487,
+        "2020": 292198
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -3091,6 +3291,10 @@
         "2025": 48520
       },
       "pep_april1_2020_base": 42912,
+      "decennial": {
+        "2010": 40801,
+        "2020": 42915
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -3170,6 +3374,10 @@
         "2025": 8035
       },
       "pep_april1_2020_base": 7980,
+      "decennial": {
+        "2010": 8365,
+        "2020": 7974
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -3249,6 +3457,10 @@
         "2025": 18759
       },
       "pep_april1_2020_base": 17970,
+      "decennial": {
+        "2010": 19224,
+        "2020": 17968
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -3328,6 +3540,10 @@
         "2025": 468200
       },
       "pep_april1_2020_base": 399711,
+      "decennial": {
+        "2010": 322833,
+        "2020": 399710
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -3407,6 +3623,10 @@
         "2025": 442660
       },
       "pep_april1_2020_base": 375892,
+      "decennial": {
+        "2010": 331298,
+        "2020": 375908
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -3486,6 +3706,10 @@
         "2025": 166272
       },
       "pep_april1_2020_base": 158432,
+      "decennial": {
+        "2010": 146318,
+        "2020": 158431
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -3565,6 +3789,10 @@
         "2025": 2802029
       },
       "pep_april1_2020_base": 2701762,
+      "decennial": {
+        "2010": 2496435,
+        "2020": 2701767
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -3644,6 +3872,10 @@
         "2025": 80406
       },
       "pep_april1_2020_base": 82871,
+      "decennial": {
+        "2010": 73090,
+        "2020": 82874
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -3723,6 +3955,10 @@
         "2025": 106879
       },
       "pep_april1_2020_base": 90359,
+      "decennial": {
+        "2010": 73314,
+        "2020": 90352
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -3802,6 +4038,10 @@
         "2025": 221810
       },
       "pep_april1_2020_base": 211667,
+      "decennial": {
+        "2010": 180822,
+        "2020": 211668
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -3881,6 +4121,10 @@
         "2025": 42608
       },
       "pep_april1_2020_base": 39644,
+      "decennial": {
+        "2010": 39996,
+        "2020": 39644
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -3960,6 +4204,10 @@
         "2025": 1528002
       },
       "pep_april1_2020_base": 1429910,
+      "decennial": {
+        "2010": 1145956,
+        "2020": 1429908
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -4039,6 +4287,10 @@
         "2025": 481718
       },
       "pep_april1_2020_base": 388647,
+      "decennial": {
+        "2010": 268685,
+        "2020": 388656
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -4118,6 +4370,10 @@
         "2025": 1575726
       },
       "pep_april1_2020_base": 1492191,
+      "decennial": {
+        "2010": 1320134,
+        "2020": 1492191
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -4197,6 +4453,10 @@
         "2025": 674516
       },
       "pep_april1_2020_base": 561909,
+      "decennial": {
+        "2010": 464697,
+        "2020": 561891
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -4276,6 +4536,10 @@
         "2025": 948563
       },
       "pep_april1_2020_base": 959090,
+      "decennial": {
+        "2010": 916542,
+        "2020": 959107
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -4355,6 +4619,10 @@
         "2025": 874790
       },
       "pep_april1_2020_base": 725042,
+      "decennial": {
+        "2010": 602095,
+        "2020": 725046
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -4434,6 +4702,10 @@
         "2025": 77734
       },
       "pep_april1_2020_base": 73321,
+      "decennial": {
+        "2010": 74364,
+        "2020": 73321
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -4513,6 +4785,10 @@
         "2025": 346328
       },
       "pep_april1_2020_base": 273426,
+      "decennial": {
+        "2010": 190039,
+        "2020": 273425
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -4592,6 +4868,10 @@
         "2025": 402449
       },
       "pep_april1_2020_base": 329226,
+      "decennial": {
+        "2010": 277789,
+        "2020": 329226
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -4671,6 +4951,10 @@
         "2025": 211115
       },
       "pep_april1_2020_base": 187994,
+      "decennial": {
+        "2010": 151372,
+        "2020": 188000
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -4750,6 +5034,10 @@
         "2025": 479958
       },
       "pep_april1_2020_base": 434008,
+      "decennial": {
+        "2010": 379448,
+        "2020": 434006
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -4829,6 +5117,10 @@
         "2025": 491884
       },
       "pep_april1_2020_base": 470856,
+      "decennial": {
+        "2010": 422718,
+        "2020": 470856
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -4908,6 +5200,10 @@
         "2025": 157772
       },
       "pep_april1_2020_base": 129752,
+      "decennial": {
+        "2010": 93420,
+        "2020": 129752
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -4987,6 +5283,10 @@
         "2025": 48149
       },
       "pep_april1_2020_base": 43461,
+      "decennial": {
+        "2010": 41551,
+        "2020": 43474
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -5066,6 +5366,10 @@
         "2025": 21210
       },
       "pep_april1_2020_base": 21799,
+      "decennial": {
+        "2010": 22570,
+        "2020": 21796
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -5145,6 +5449,10 @@
         "2025": 16250
       },
       "pep_april1_2020_base": 16145,
+      "decennial": {
+        "2010": 15535,
+        "2020": 16147
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -5224,6 +5532,10 @@
         "2025": 606573
       },
       "pep_april1_2020_base": 553543,
+      "decennial": {
+        "2010": 494593,
+        "2020": 553543
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -5303,6 +5615,10 @@
         "2025": 38089
       },
       "pep_april1_2020_base": 33763,
+      "decennial": {
+        "2010": 30776,
+        "2020": 33764
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -5382,6 +5698,10 @@
         "2025": 93288
       },
       "pep_april1_2020_base": 75305,
+      "decennial": {
+        "2010": 55043,
+        "2020": 75305
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -5461,6 +5781,10 @@
         "2025": 26695
       },
       "pep_april1_2020_base": 25321,
+      "decennial": {
+        "2010": 24896,
+        "2020": 25318
+      },
       "acs5": {
         "2019": {
           "total_population": {
@@ -5538,8 +5862,56 @@
       2019,
       2024
     ],
-    "decennial_loaded": false
+    "decennial_loaded": true,
+    "decennial_years": [
+      2010,
+      2020
+    ],
+    "decennial_2020_state": 21538187,
+    "decennial_2010_state": 18801310,
+    "decennial_2020_differs_from_pep_april1_base": true
   },
+  "source_years": [
+    {
+      "id": "pep-v2025-july1",
+      "kind": "estimate",
+      "years": [
+        2020,
+        2021,
+        2022,
+        2023,
+        2024,
+        2025
+      ],
+      "reference_date": "July 1"
+    },
+    {
+      "id": "pep-v2025-april1-base",
+      "kind": "estimate",
+      "years": [
+        2020
+      ],
+      "reference_date": "April 1, 2020"
+    },
+    {
+      "id": "acs5",
+      "kind": "estimate",
+      "years": [
+        2019,
+        2024
+      ],
+      "reference_date": "5-year period"
+    },
+    {
+      "id": "decennial-april1",
+      "kind": "count",
+      "years": [
+        2010,
+        2020
+      ],
+      "reference_date": "April 1"
+    }
+  ],
   "map": {
     "ground": "NASA GIBS Blue Marble Next Generation",
     "tile_url": "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/BlueMarble_NextGeneration/default/GoogleMapsCompatible_Level8/{z}/{y}/{x}.jpeg",

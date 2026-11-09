@@ -23,6 +23,7 @@ function reading(place, source, year, topicId) {
   if (!source.loaded) return null;
   if (source.id === "pep-v2025-july1") return { value: place.pep_july1[String(year)], moe: null, unit: "people" };
   if (source.id === "pep-v2025-april1-base") return { value: place.pep_april1_2020_base, moe: null, unit: "people" };
+  if (source.id === "decennial-april1") return { value: place.decennial[String(year)], moe: null, unit: "people" };
   const metric = topicById(topicId || state.topic).acs_metric;
   const item = place.acs5[String(year)][metric];
   return { value: item.value, moe: item.moe, unit: acsUnit(metric), uncertainty: item.uncertainty, low_reliability: item.low_reliability };
@@ -60,19 +61,116 @@ function mkMap() {
 }
 
 let map;
-function frameFlorida() {
-  const panel = $("panel").getBoundingClientRect();
-  const narrow = innerWidth <= 760;
-  const bottom = narrow ? Math.round(panel.height) + 16 : 28;
-  const pitch = $("extrude").checked && state.globe ? 55 : 0;
-  map.fitBounds([[-87.95, 24.2], [-79.9, 31.15]], {
-    padding: { top: narrow ? 128 : 64, right: narrow ? 14 : 28, bottom, left: narrow ? 12 : 20 },
-    duration: 0,
-    maxZoom: 6.4,
-    pitch,
+const FLORIDA_BOUNDS = [[-87.63494, 24.5213], [-80.03136, 31.00089]];
+
+function collectSamples(geojson) {
+  const out = [];
+  const walk = (coords, bucket) => {
+    if (typeof coords[0] === "number") bucket.push(coords);
+    else coords.forEach((part) => walk(part, bucket));
+  };
+  geojson.features.forEach((feature) => {
+    const bucket = [];
+    walk(feature.geometry.coordinates, bucket);
+    if (!bucket.length) return;
+    let west = bucket[0], east = bucket[0], south = bucket[0], north = bucket[0];
+    bucket.forEach((coord, index) => {
+      if (coord[0] < west[0]) west = coord;
+      if (coord[0] > east[0]) east = coord;
+      if (coord[1] < south[1]) south = coord;
+      if (coord[1] > north[1]) north = coord;
+      if (index % 10 === 0) out.push({ lng: coord[0], lat: coord[1], geoid: feature.properties.geoid });
+    });
+    [west, east, south, north].forEach((coord) => out.push({ lng: coord[0], lat: coord[1], geoid: feature.properties.geoid }));
   });
-  map.setPitch(pitch);
-  if (!state.globe) map.setProjection({ type: "mercator" });
+  return out;
+}
+
+function projectColumn(lng, lat, meters) {
+  const ground = map.project([lng, lat]);
+  const inner = map.transform && map.transform._mercatorTransform;
+  if (!meters || !inner || !inner.coordinatePoint || !inner._pixelMatrix3D || !maplibregl.MercatorCoordinate) return ground;
+  const coord = maplibregl.MercatorCoordinate.fromLngLat([lng, lat]);
+  const base = inner.coordinatePoint(coord, 0, inner._pixelMatrix3D);
+  const top = inner.coordinatePoint(coord, meters, inner._pixelMatrix3D);
+  if (!base || !top || !isFinite(top.x) || !isFinite(top.y)) return ground;
+  return { x: ground.x + (top.x - base.x), y: ground.y + (top.y - base.y) };
+}
+
+function safeRect() {
+  const mapRect = $("map").getBoundingClientRect();
+  const place = (el) => {
+    const rect = el.getBoundingClientRect();
+    return {
+      left: rect.left - mapRect.left,
+      top: rect.top - mapRect.top,
+      right: rect.right - mapRect.left,
+      bottom: rect.bottom - mapRect.top,
+    };
+  };
+  const views = place(document.querySelector(".views"));
+  const legend = place($("legend"));
+  const panel = place($("panel"));
+  const narrow = mapRect.width <= 760;
+  let top = Math.max(8, views.bottom + 8);
+  let bottom = mapRect.height - 36;
+  if (narrow) {
+    top = Math.max(top, legend.bottom + 8);
+    const sheetTop = panel.top;
+    if (sheetTop < mapRect.height - 4) bottom = Math.min(bottom, sheetTop - 10);
+  }
+  return { top, left: 22, right: mapRect.width - 28, bottom: Math.max(top + 80, bottom), width: mapRect.width, height: mapRect.height };
+}
+
+function frameFlorida() {
+  if (!map || !state.samples) return;
+  const pitch = $("extrude").checked && state.globe ? 55 : 0;
+  map.setBearing(0);
+  map.setProjection({ type: state.globe ? "globe" : "mercator" });
+  const first = safeRect();
+  map.fitBounds(FLORIDA_BOUNDS, {
+    padding: {
+      top: first.top,
+      left: first.left,
+      right: Math.max(12, first.width - first.right),
+      bottom: Math.max(12, first.height - first.bottom),
+    },
+    pitch,
+    duration: 0,
+    maxZoom: 6.6,
+  });
+  map.jumpTo({ pitch, bearing: 0 });
+  let fit = null;
+  for (let step = 0; step < 14; step += 1) {
+    const safe = safeRect();
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    state.samples.forEach((sample) => {
+      const meters = $("extrude").checked ? (state.columnMeters[sample.geoid] || 0) : 0;
+      const point = projectColumn(sample.lng, sample.lat, meters);
+      minX = Math.min(minX, point.x);
+      maxX = Math.max(maxX, point.x);
+      minY = Math.min(minY, point.y);
+      maxY = Math.max(maxY, point.y);
+    });
+    const overflowLeft = safe.left - minX;
+    const overflowRight = maxX - safe.right;
+    const overflowTop = safe.top - minY;
+    const overflowBottom = maxY - safe.bottom;
+    fit = { minX, minY, maxX, maxY, safe, zoom: map.getZoom(), overflowLeft, overflowRight, overflowTop, overflowBottom };
+    if (overflowLeft <= 1 && overflowRight <= 1 && overflowTop <= 1 && overflowBottom <= 1) break;
+    const roomX = Math.max(40, safe.right - safe.left);
+    const roomY = Math.max(40, safe.bottom - safe.top);
+    const spanX = maxX - minX;
+    const spanY = maxY - minY;
+    let zoom = map.getZoom();
+    if (spanX > roomX || spanY > roomY) zoom = Math.max(3.5, zoom - Math.log2(Math.max(spanX / roomX, spanY / roomY)));
+    const centerPx = map.project(map.getCenter());
+    const shiftX = Math.max(overflowRight, 0) - Math.max(overflowLeft, 0);
+    const shiftY = Math.max(overflowBottom, 0) - Math.max(overflowTop, 0);
+    const next = map.unproject([centerPx.x + shiftX, centerPx.y + shiftY]);
+    map.jumpTo({ center: next, zoom, pitch, bearing: 0 });
+  }
+  window.__fit = fit;
 }
 
 function paint() {
@@ -88,6 +186,7 @@ function paint() {
   const span = hi - lo || 1;
   const color = ["match", ["get", "geoid"]];
   const height = ["match", ["get", "geoid"]];
+  state.columnMeters = {};
   state.catalog.counties.forEach((county) => {
     const value = values[county.geoid];
     if (value == null) {
@@ -96,8 +195,10 @@ function paint() {
     } else {
       const t = (value - lo) / span;
       const idx = Math.min(RAMP.length - 1, Math.floor(t * (RAMP.length - 1)));
+      const meters = Math.round(12000 + t * 130000);
+      state.columnMeters[county.geoid] = meters;
       color.push(county.geoid, RAMP[idx]);
-      height.push(county.geoid, $("extrude").checked ? Math.round(12000 + t * 130000) : 0);
+      height.push(county.geoid, $("extrude").checked ? meters : 0);
     }
   });
   color.push("#314255");
@@ -141,9 +242,10 @@ function showPlace() {
     ? `period ${source.periods[state.year]}`
     : (String(source.reference_date).includes(String(state.year)) ? source.reference_date : `${source.reference_date} ${state.year}`);
   $("place-meta").textContent = `${source.label}. ${when}.`;
-  const moe = item.moe == null ? "not published" : "±" + fmt(item.unit, item.moe);
+  const count = source.kind === "count";
+  const moe = count ? "none (census count)" : (item.moe == null ? "not published" : "±" + fmt(item.unit, item.moe));
   $("place-kv").replaceChildren();
-  [["Estimate", fmt(item.unit, item.value)], ["90% margin", moe], ["Florida", fmt(stateItem.unit, stateItem.value)]].forEach(([label, value]) => {
+  [[count ? "Count" : "Estimate", fmt(item.unit, item.value)], [count ? "Margin of error" : "90% margin", moe], ["Florida", fmt(stateItem.unit, stateItem.value)]].forEach(([label, value]) => {
     const span = document.createElement("span");
     span.textContent = label;
     const strong = document.createElement("b");
@@ -179,7 +281,7 @@ function fillSelectors() {
   source.innerHTML = "";
   chosen.sources.forEach((id) => {
     const item = sourceById(id);
-    const option = new Option(item.loaded ? item.short : item.short + " (not loaded)", item.id);
+    const option = new Option(item.loaded ? item.short : item.short + " (not in this build)", item.id);
     option.disabled = !item.loaded;
     source.add(option);
   });
@@ -211,8 +313,11 @@ function fillSelectors() {
     $("source-link").append(document.createTextNode(` SHA-256 ${spec.retrieval.sha256}.`));
   }
   const blocked = state.catalog.sources.filter((item) => chosen.sources.includes(item.id) && !item.loaded);
-  $("unavailable").hidden = blocked.length === 0;
-  $("unavailable").textContent = blocked.map((item) => item.reason).join(" ");
+  const unavailable = $("unavailable");
+  unavailable.hidden = blocked.length === 0;
+  unavailable.textContent = blocked.length
+    ? blocked.map((item) => `${item.short} is in this list and cannot be selected yet. This review build does not include those counts.`).join(" ")
+    : "";
   const compare = $("compare");
   const current = compare.value;
   compare.innerHTML = '<option value="">Another county</option>';
@@ -246,13 +351,18 @@ function ask(question) {
   }
   const item = reading(place.geoid ? place : state.catalog.state, source, year, topic);
   const who = place.name || "Florida";
-  return `${who}, ${specTopic.label}, ${source.label}, ${source.reference_date} ${year}: ${fmt(item.unit, item.value)}. ${item.moe == null ? "No 90% margin of error is published for this selection." : "90% margin of error " + fmt(item.unit, item.moe) + "."} ${source.note}`;
+  const figure = source.kind === "count"
+    ? "This is a census count, not a PEP or ACS estimate."
+    : (item.moe == null ? "No 90% margin of error is published for this selection." : "90% margin of error " + fmt(item.unit, item.moe) + ".");
+  return `${who}, ${specTopic.label}, ${source.label}, ${source.reference_date} ${year}: ${fmt(item.unit, item.value)}. ${figure} ${source.note}`;
 }
 
 async function boot() {
   state.catalog = await fetch(ROOT + "data/catalog.json").then((res) => res.json());
   const counties = await fetch(ROOT + "data/fl_counties.geojson").then((res) => res.json());
-  $("credit").textContent = "Sources: U.S. Census Bureau Population Estimates Program Vintage 2025 county totals (July 1, 2020–2025, and the April 1, 2020 estimates base in that file); American Community Survey 5-year 2019 and 2024. Imagery: NASA GIBS Blue Marble. Not endorsed or certified by the Census Bureau or NASA. Decennial counts are not loaded in this build.";
+  $("credit").textContent = "Sources in this review build: U.S. Census Bureau Population Estimates Vintage 2025 (July 1, 2020–2025, and the separate April 1, 2020 estimates base), Decennial Census counts for April 1, 2010 and April 1, 2020, and American Community Survey 5-year 2019 and 2024. Imagery: NASA GIBS Blue Marble. Not endorsed or certified by the Census Bureau or NASA.";
+  state.samples = collectSamples(counties);
+  state.columnMeters = {};
   fillSelectors();
   if (innerWidth <= 760) $("panel").classList.add("min");
   map = window.__map = mkMap();
@@ -298,14 +408,16 @@ async function boot() {
 function refresh() {
   fillSelectors();
   showPlace();
-  if (map && map.isStyleLoaded()) paint();
+  if (map && map.isStyleLoaded()) {
+    paint();
+    frameFlorida();
+  }
 }
 $("topic").onchange = () => { state.topic = $("topic").value; refresh(); };
 $("source").onchange = () => { state.sourceId = $("source").value; refresh(); };
 $("year").onchange = () => { state.year = Number($("year").value); refresh(); };
 $("compare").onchange = showPlace;
-$("extrude").onchange = () => { if (map) { paint(); map.setPitch($("extrude").checked && state.globe ? 55 : 0); } };
-$("frame").onclick = () => frameFlorida();
+$("extrude").onchange = () => { if (map) { paint(); frameFlorida(); } };
 $("view-globe").onclick = () => { state.globe = true; map.setProjection({ type: "globe" }); $("view-globe").classList.add("on"); $("view-flat").classList.remove("on"); frameFlorida(); };
 $("view-flat").onclick = () => { state.globe = false; map.setProjection({ type: "mercator" }); map.setPitch(0); $("view-flat").classList.add("on"); $("view-globe").classList.remove("on"); frameFlorida(); };
 $("grip").onclick = () => { $("panel").classList.toggle("min"); if (map) frameFlorida(); };

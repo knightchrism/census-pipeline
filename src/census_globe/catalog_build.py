@@ -2,8 +2,8 @@
 
 PEP Vintage 2025 is one revision series (July 1, 2020–2025) plus the April 1, 2020
 estimates base in that same file. Vintage 2024 is not copied in. ACS 5-year values
-come from the existing tested export. Decennial queries are recorded only when the
-API actually returns rows.
+come from the existing tested export. Decennial counts come from the checked public
+extract of the 2010 SF1 and 2020 PL queries. That extract contains no API key.
 """
 from __future__ import annotations
 
@@ -109,28 +109,97 @@ def load_acs(path: Path) -> dict:
             "source_files": payload["source"].get("files", [])}
 
 
-def decennial_status(attempt: dict | None) -> dict:
-    """Record a real fetch attempt. Never invent counts."""
-    if not attempt or not attempt.get("ok"):
-        return {
-            "id": "decennial-april1",
-            "loaded": False,
-            "family": "decennial_april1",
-            "label": "Decennial census (April 1)",
-            "short": "Decennial census",
-            "reason": (
-                "Not loaded. The Census Data API variable pages confirmed 2020 PL P1_001N and 2010 SF1 P001001, "
-                "but county queries returned Missing Key. No API key was supplied and no counts were filled in."
-            ),
-            "links": {
-                "documentation": DEC_PAGE,
-                "2020": DEC_2020_URL + "?get=NAME,P1_001N&for=county:*&in=state:12",
-                "2010": DEC_2010_URL + "?get=NAME,P001001&for=county:*&in=state:12",
-            },
-            "variables": {"2010": "P001001", "2020": "P1_001N"},
-            "reference_date": "April 1",
-        }
-    return attempt
+def load_decennial(path: Path) -> dict:
+    """Florida April 1 census counts. Rejects a file that does not reconcile."""
+    payload = json.loads(path.read_text())
+    years = payload["years"]
+    if set(years) != {"2010", "2020"}:
+        raise ValueError("decennial file must contain 2010 and 2020 only")
+    expected = {
+        "2010": {"total": 18_801_310, "variable": "P001001", "dataset": "2010/dec/sf1"},
+        "2020": {"total": 21_538_187, "variable": "P1_001N", "dataset": "2020/dec/pl"},
+    }
+    by_year: dict[str, dict[str, int]] = {}
+    geoids = None
+    for year, spec in expected.items():
+        block = years[year]
+        if block["dataset"] != spec["dataset"] or block["variable"] != spec["variable"]:
+            raise ValueError(f"{year} dataset/variable does not match the official series")
+        if block["reference_date"] != f"{year}-04-01":
+            raise ValueError(f"{year} reference date is not April 1")
+        counties = block["counties"]
+        if len(counties) != 67 or block["state_total"] != spec["total"] or block["county_sum"] != spec["total"]:
+            raise ValueError(f"{year} decennial reconciliation failed")
+        values = {}
+        for county in counties:
+            geoid = county["geoid"]
+            population = county["population"]
+            if geoid in values or not isinstance(population, int) or population <= 0:
+                raise ValueError(f"bad decennial county {geoid}")
+            if geoid != "12" + county["county"] or county["state"] != "12":
+                raise ValueError(f"decennial GEOID mismatch {geoid}")
+            values[geoid] = population
+        if sum(values.values()) != spec["total"]:
+            raise ValueError(f"{year} county sum does not equal the state total")
+        by_year[year] = values
+        geoids = set(values) if geoids is None else geoids
+        if set(values) != geoids:
+            raise ValueError("2010 and 2020 county GEOIDs differ")
+    text = path.read_text()
+    if "key=" in text.lower() or "REDACTED" in text:
+        raise ValueError("decennial extract must not contain an API key or a key placeholder")
+    return {
+        "by_year": by_year,
+        "state": {year: expected[year]["total"] for year in expected},
+        "sha256": _sha256(path),
+        "bytes": path.stat().st_size,
+    }
+
+
+def decennial_source(decennial: dict, provenance: dict | None) -> dict:
+    """Loaded April 1 census counts. Separate from the PEP estimates base."""
+    requests = []
+    if provenance:
+        for item in provenance.get("requests", []):
+            requests.append({
+                "dataset": item["dataset"],
+                "variable": item["variable"],
+                "reference_date": item["reference_date"],
+                "http_status": item["http_status"],
+                "sha256": item["sha256"],
+                "retrieved_at_utc": item["retrieved_at_utc"],
+            })
+    return {
+        "id": "decennial-april1",
+        "loaded": True,
+        "family": "decennial_april1",
+        "kind": "count",
+        "topic": "population",
+        "label": "Decennial census count, April 1",
+        "short": "Decennial census count",
+        "reference_date": "April 1",
+        "years": [2010, 2020],
+        "metric": "population",
+        "unit": "people",
+        "moe": False,
+        "note": (
+            "April 1 census counts: 2010 Summary File 1 P001001 and 2020 PL 94-171 P1_001N. "
+            "These are counts, not estimates. The 2020 count is not the Vintage 2025 April 1 estimates base."
+        ),
+        "links": {
+            "documentation": DEC_PAGE,
+            "2020": DEC_2020_URL,
+            "2010": DEC_2010_URL,
+            "2010_examples": "https://api.census.gov/data/2010/dec/sf1/examples.html",
+        },
+        "variables": {"2010": "P001001", "2020": "P1_001N"},
+        "retrieval": {
+            "sha256": decennial["sha256"],
+            "bytes": decennial["bytes"],
+            "requests": requests,
+            "api_key_in_repository": False,
+        },
+    }
 
 
 def comparison_allowed(left: dict, right: dict) -> dict:
@@ -150,11 +219,15 @@ def comparison_allowed(left: dict, right: dict) -> dict:
     return {"ok": True, "reason": "Same source, geography, and reference-date family."}
 
 
-def build_catalog(pep: dict, acs: dict, generated_at: str, decennial: dict | None = None) -> dict:
+def build_catalog(pep: dict, acs: dict, generated_at: str, decennial: dict, provenance: dict | None = None) -> dict:
     by_geo = {row["geoid"]: row for row in pep["counties"]}
     acs_by_geo = {row["geoid"]: row for row in acs["counties"]}
     if set(by_geo) != set(acs_by_geo):
         raise ValueError("PEP and ACS county GEOIDs differ")
+    if set(by_geo) != set(decennial["by_year"]["2020"]):
+        raise ValueError("Decennial and PEP county GEOIDs differ")
+    if decennial["state"]["2020"] == pep["state"]["april1_2020_base"]:
+        raise ValueError("2020 census count must stay distinct from the PEP estimates base")
     places = []
     for geoid in sorted(by_geo):
         pep_row = by_geo[geoid]
@@ -164,12 +237,14 @@ def build_catalog(pep: dict, acs: dict, generated_at: str, decennial: dict | Non
             "name": acs_row["name"],
             "pep_july1": pep_row["july1"],
             "pep_april1_2020_base": pep_row["april1_2020_base"],
+            "decennial": {year: decennial["by_year"][year][geoid] for year in ("2010", "2020")},
             "acs5": acs_row["years"],
         })
     state = {
         "name": "Florida",
         "pep_july1": pep["state"]["july1"],
         "pep_april1_2020_base": pep["state"]["april1_2020_base"],
+        "decennial": decennial["state"],
         "acs5": acs["state"]["years"],
     }
     sources = [
@@ -183,6 +258,7 @@ def build_catalog(pep: dict, acs: dict, generated_at: str, decennial: dict | Non
             "reference_date": "July 1",
             "vintage": 2025,
             "years": [2020, 2021, 2022, 2023, 2024, 2025],
+            "kind": "estimate",
             "metric": "population",
             "unit": "people",
             "moe": False,
@@ -208,6 +284,7 @@ def build_catalog(pep: dict, acs: dict, generated_at: str, decennial: dict | Non
             "reference_date": "April 1, 2020",
             "vintage": 2025,
             "years": [2020],
+            "kind": "estimate",
             "metric": "population",
             "unit": "people",
             "moe": False,
@@ -225,6 +302,7 @@ def build_catalog(pep: dict, acs: dict, generated_at: str, decennial: dict | Non
             "topic": "demographics",
             "label": "ACS 5-year estimates",
             "short": "ACS 5-year",
+            "kind": "estimate",
             "reference_date": "5-year period",
             "years": [2019, 2024],
             "periods": {"2019": "2015-2019", "2024": "2020-2024"},
@@ -238,7 +316,7 @@ def build_catalog(pep: dict, acs: dict, generated_at: str, decennial: dict | Non
             "links": {"documentation": ACS_PAGE},
             "retrieval": {"acs_export_generated_at": acs["generated_at"]},
         },
-        decennial_status(decennial),
+        decennial_source(decennial, provenance),
     ]
     topics = [
         {
@@ -265,8 +343,18 @@ def build_catalog(pep: dict, acs: dict, generated_at: str, decennial: dict | Non
             "pep_sums_match_state": True,
             "pep_vintages_mixed": False,
             "acs_years": [2019, 2024],
-            "decennial_loaded": False,
+            "decennial_loaded": True,
+            "decennial_years": [2010, 2020],
+            "decennial_2020_state": decennial["state"]["2020"],
+            "decennial_2010_state": decennial["state"]["2010"],
+            "decennial_2020_differs_from_pep_april1_base": True,
         },
+        "source_years": [
+            {"id": "pep-v2025-july1", "kind": "estimate", "years": [2020, 2021, 2022, 2023, 2024, 2025], "reference_date": "July 1"},
+            {"id": "pep-v2025-april1-base", "kind": "estimate", "years": [2020], "reference_date": "April 1, 2020"},
+            {"id": "acs5", "kind": "estimate", "years": [2019, 2024], "reference_date": "5-year period"},
+            {"id": "decennial-april1", "kind": "count", "years": [2010, 2020], "reference_date": "April 1"},
+        ],
         "map": {
             "ground": "NASA GIBS Blue Marble Next Generation",
             "tile_url": "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/BlueMarble_NextGeneration/default/GoogleMapsCompatible_Level8/{z}/{y}/{x}.jpeg",
@@ -276,17 +364,24 @@ def build_catalog(pep: dict, acs: dict, generated_at: str, decennial: dict | Non
 
 
 def main() -> None:
-    from .paths import CATALOG_PATH, EXPORT_PATH, ROOT
+    from .paths import CATALOG_PATH, DECENNIAL_PATH, DECENNIAL_PROVENANCE_PATH, EXPORT_PATH, ROOT
     pep = ROOT / "data" / "cache" / "sources" / "co-est2025-alldata.csv"
     if not pep.exists():
         raise SystemExit(f"missing {pep}")
-    catalog = write_catalog(pep, EXPORT_PATH, CATALOG_PATH)
+    catalog = write_catalog(pep, EXPORT_PATH, DECENNIAL_PATH, DECENNIAL_PROVENANCE_PATH, CATALOG_PATH)
     print(f"wrote {CATALOG_PATH} counties={catalog['qc']['pep_county_count']}")
 
 
-def write_catalog(pep_csv: Path, acs_json: Path, dest: Path) -> dict:
+def write_catalog(pep_csv: Path, acs_json: Path, decennial_json: Path, provenance_json: Path, dest: Path) -> dict:
     generated_at = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
-    catalog = build_catalog(load_pep_v2025(pep_csv), load_acs(acs_json), generated_at)
+    provenance = json.loads(provenance_json.read_text()) if provenance_json.exists() else None
+    catalog = build_catalog(
+        load_pep_v2025(pep_csv),
+        load_acs(acs_json),
+        generated_at,
+        load_decennial(decennial_json),
+        provenance,
+    )
     dest.write_text(json.dumps(catalog, indent=2) + "\n")
     return catalog
 

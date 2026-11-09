@@ -22,7 +22,6 @@
   <div class="views" role="group" aria-label="View">
     <button type="button" id="view-globe" class="on">Globe</button>
     <button type="button" id="view-flat">Flat</button>
-    <button type="button" id="frame">Frame Florida</button>
     <label class="cmp"><input type="checkbox" id="extrude" checked> 3D columns</label>
   </div>
   <div class="legendbox" id="legend"></div>
@@ -33,10 +32,10 @@
       <h2>What to show</h2>
       <label class="pickl">Topic<select id="topic"></select></label>
       <label class="pickl">Official source<select id="source"></select></label>
+      <p class="small muted" id="unavailable" hidden></p>
       <label class="pickl">Year<select id="year"></select></label>
       <p class="note" id="source-note"></p>
       <p class="small" id="source-link"></p>
-      <p class="warn" id="unavailable" hidden></p>
     </section>
     <section class="sec">
       <h2 id="place-name">Select a county</h2>

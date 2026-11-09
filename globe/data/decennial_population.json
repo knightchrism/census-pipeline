@@ -1,0 +1,972 @@
+{
+  "title": "Florida decennial total population \u2014 official Census API extract",
+  "source": "U.S. Census Bureau Decennial Census via Census Data API",
+  "not_endorsed_by_census_bureau": true,
+  "geography_level": "state and county",
+  "state_fips": "12",
+  "state_name": "Florida",
+  "years": {
+    "2020": {
+      "dataset": "2020/dec/pl",
+      "variable": "P1_001N",
+      "variable_label": "Total population (PL 94-171 P1)",
+      "reference_date": "2020-04-01",
+      "state_total": 21538187,
+      "county_sum": 21538187,
+      "county_count": 67,
+      "counties": [
+        {
+          "name": "Alachua County, Florida",
+          "state": "12",
+          "population": 278468,
+          "county": "001",
+          "geoid": "12001"
+        },
+        {
+          "name": "Baker County, Florida",
+          "state": "12",
+          "population": 28259,
+          "county": "003",
+          "geoid": "12003"
+        },
+        {
+          "name": "Bay County, Florida",
+          "state": "12",
+          "population": 175216,
+          "county": "005",
+          "geoid": "12005"
+        },
+        {
+          "name": "Bradford County, Florida",
+          "state": "12",
+          "population": 28303,
+          "county": "007",
+          "geoid": "12007"
+        },
+        {
+          "name": "Brevard County, Florida",
+          "state": "12",
+          "population": 606612,
+          "county": "009",
+          "geoid": "12009"
+        },
+        {
+          "name": "Broward County, Florida",
+          "state": "12",
+          "population": 1944375,
+          "county": "011",
+          "geoid": "12011"
+        },
+        {
+          "name": "Calhoun County, Florida",
+          "state": "12",
+          "population": 13648,
+          "county": "013",
+          "geoid": "12013"
+        },
+        {
+          "name": "Charlotte County, Florida",
+          "state": "12",
+          "population": 186847,
+          "county": "015",
+          "geoid": "12015"
+        },
+        {
+          "name": "Citrus County, Florida",
+          "state": "12",
+          "population": 153843,
+          "county": "017",
+          "geoid": "12017"
+        },
+        {
+          "name": "Clay County, Florida",
+          "state": "12",
+          "population": 218245,
+          "county": "019",
+          "geoid": "12019"
+        },
+        {
+          "name": "Collier County, Florida",
+          "state": "12",
+          "population": 375752,
+          "county": "021",
+          "geoid": "12021"
+        },
+        {
+          "name": "Columbia County, Florida",
+          "state": "12",
+          "population": 69698,
+          "county": "023",
+          "geoid": "12023"
+        },
+        {
+          "name": "DeSoto County, Florida",
+          "state": "12",
+          "population": 33976,
+          "county": "027",
+          "geoid": "12027"
+        },
+        {
+          "name": "Dixie County, Florida",
+          "state": "12",
+          "population": 16759,
+          "county": "029",
+          "geoid": "12029"
+        },
+        {
+          "name": "Duval County, Florida",
+          "state": "12",
+          "population": 995567,
+          "county": "031",
+          "geoid": "12031"
+        },
+        {
+          "name": "Escambia County, Florida",
+          "state": "12",
+          "population": 321905,
+          "county": "033",
+          "geoid": "12033"
+        },
+        {
+          "name": "Flagler County, Florida",
+          "state": "12",
+          "population": 115378,
+          "county": "035",
+          "geoid": "12035"
+        },
+        {
+          "name": "Franklin County, Florida",
+          "state": "12",
+          "population": 12451,
+          "county": "037",
+          "geoid": "12037"
+        },
+        {
+          "name": "Gadsden County, Florida",
+          "state": "12",
+          "population": 43826,
+          "county": "039",
+          "geoid": "12039"
+        },
+        {
+          "name": "Gilchrist County, Florida",
+          "state": "12",
+          "population": 17864,
+          "county": "041",
+          "geoid": "12041"
+        },
+        {
+          "name": "Glades County, Florida",
+          "state": "12",
+          "population": 12126,
+          "county": "043",
+          "geoid": "12043"
+        },
+        {
+          "name": "Gulf County, Florida",
+          "state": "12",
+          "population": 14192,
+          "county": "045",
+          "geoid": "12045"
+        },
+        {
+          "name": "Hamilton County, Florida",
+          "state": "12",
+          "population": 14004,
+          "county": "047",
+          "geoid": "12047"
+        },
+        {
+          "name": "Hardee County, Florida",
+          "state": "12",
+          "population": 25327,
+          "county": "049",
+          "geoid": "12049"
+        },
+        {
+          "name": "Hendry County, Florida",
+          "state": "12",
+          "population": 39619,
+          "county": "051",
+          "geoid": "12051"
+        },
+        {
+          "name": "Hernando County, Florida",
+          "state": "12",
+          "population": 194515,
+          "county": "053",
+          "geoid": "12053"
+        },
+        {
+          "name": "Highlands County, Florida",
+          "state": "12",
+          "population": 101235,
+          "county": "055",
+          "geoid": "12055"
+        },
+        {
+          "name": "Hillsborough County, Florida",
+          "state": "12",
+          "population": 1459762,
+          "county": "057",
+          "geoid": "12057"
+        },
+        {
+          "name": "Holmes County, Florida",
+          "state": "12",
+          "population": 19653,
+          "county": "059",
+          "geoid": "12059"
+        },
+        {
+          "name": "Indian River County, Florida",
+          "state": "12",
+          "population": 159788,
+          "county": "061",
+          "geoid": "12061"
+        },
+        {
+          "name": "Jackson County, Florida",
+          "state": "12",
+          "population": 47319,
+          "county": "063",
+          "geoid": "12063"
+        },
+        {
+          "name": "Jefferson County, Florida",
+          "state": "12",
+          "population": 14510,
+          "county": "065",
+          "geoid": "12065"
+        },
+        {
+          "name": "Lafayette County, Florida",
+          "state": "12",
+          "population": 8226,
+          "county": "067",
+          "geoid": "12067"
+        },
+        {
+          "name": "Lake County, Florida",
+          "state": "12",
+          "population": 383956,
+          "county": "069",
+          "geoid": "12069"
+        },
+        {
+          "name": "Lee County, Florida",
+          "state": "12",
+          "population": 760822,
+          "county": "071",
+          "geoid": "12071"
+        },
+        {
+          "name": "Leon County, Florida",
+          "state": "12",
+          "population": 292198,
+          "county": "073",
+          "geoid": "12073"
+        },
+        {
+          "name": "Levy County, Florida",
+          "state": "12",
+          "population": 42915,
+          "county": "075",
+          "geoid": "12075"
+        },
+        {
+          "name": "Liberty County, Florida",
+          "state": "12",
+          "population": 7974,
+          "county": "077",
+          "geoid": "12077"
+        },
+        {
+          "name": "Madison County, Florida",
+          "state": "12",
+          "population": 17968,
+          "county": "079",
+          "geoid": "12079"
+        },
+        {
+          "name": "Manatee County, Florida",
+          "state": "12",
+          "population": 399710,
+          "county": "081",
+          "geoid": "12081"
+        },
+        {
+          "name": "Marion County, Florida",
+          "state": "12",
+          "population": 375908,
+          "county": "083",
+          "geoid": "12083"
+        },
+        {
+          "name": "Martin County, Florida",
+          "state": "12",
+          "population": 158431,
+          "county": "085",
+          "geoid": "12085"
+        },
+        {
+          "name": "Miami-Dade County, Florida",
+          "state": "12",
+          "population": 2701767,
+          "county": "086",
+          "geoid": "12086"
+        },
+        {
+          "name": "Monroe County, Florida",
+          "state": "12",
+          "population": 82874,
+          "county": "087",
+          "geoid": "12087"
+        },
+        {
+          "name": "Nassau County, Florida",
+          "state": "12",
+          "population": 90352,
+          "county": "089",
+          "geoid": "12089"
+        },
+        {
+          "name": "Okaloosa County, Florida",
+          "state": "12",
+          "population": 211668,
+          "county": "091",
+          "geoid": "12091"
+        },
+        {
+          "name": "Okeechobee County, Florida",
+          "state": "12",
+          "population": 39644,
+          "county": "093",
+          "geoid": "12093"
+        },
+        {
+          "name": "Orange County, Florida",
+          "state": "12",
+          "population": 1429908,
+          "county": "095",
+          "geoid": "12095"
+        },
+        {
+          "name": "Osceola County, Florida",
+          "state": "12",
+          "population": 388656,
+          "county": "097",
+          "geoid": "12097"
+        },
+        {
+          "name": "Palm Beach County, Florida",
+          "state": "12",
+          "population": 1492191,
+          "county": "099",
+          "geoid": "12099"
+        },
+        {
+          "name": "Pasco County, Florida",
+          "state": "12",
+          "population": 561891,
+          "county": "101",
+          "geoid": "12101"
+        },
+        {
+          "name": "Pinellas County, Florida",
+          "state": "12",
+          "population": 959107,
+          "county": "103",
+          "geoid": "12103"
+        },
+        {
+          "name": "Polk County, Florida",
+          "state": "12",
+          "population": 725046,
+          "county": "105",
+          "geoid": "12105"
+        },
+        {
+          "name": "Putnam County, Florida",
+          "state": "12",
+          "population": 73321,
+          "county": "107",
+          "geoid": "12107"
+        },
+        {
+          "name": "St. Johns County, Florida",
+          "state": "12",
+          "population": 273425,
+          "county": "109",
+          "geoid": "12109"
+        },
+        {
+          "name": "St. Lucie County, Florida",
+          "state": "12",
+          "population": 329226,
+          "county": "111",
+          "geoid": "12111"
+        },
+        {
+          "name": "Santa Rosa County, Florida",
+          "state": "12",
+          "population": 188000,
+          "county": "113",
+          "geoid": "12113"
+        },
+        {
+          "name": "Sarasota County, Florida",
+          "state": "12",
+          "population": 434006,
+          "county": "115",
+          "geoid": "12115"
+        },
+        {
+          "name": "Seminole County, Florida",
+          "state": "12",
+          "population": 470856,
+          "county": "117",
+          "geoid": "12117"
+        },
+        {
+          "name": "Sumter County, Florida",
+          "state": "12",
+          "population": 129752,
+          "county": "119",
+          "geoid": "12119"
+        },
+        {
+          "name": "Suwannee County, Florida",
+          "state": "12",
+          "population": 43474,
+          "county": "121",
+          "geoid": "12121"
+        },
+        {
+          "name": "Taylor County, Florida",
+          "state": "12",
+          "population": 21796,
+          "county": "123",
+          "geoid": "12123"
+        },
+        {
+          "name": "Union County, Florida",
+          "state": "12",
+          "population": 16147,
+          "county": "125",
+          "geoid": "12125"
+        },
+        {
+          "name": "Volusia County, Florida",
+          "state": "12",
+          "population": 553543,
+          "county": "127",
+          "geoid": "12127"
+        },
+        {
+          "name": "Wakulla County, Florida",
+          "state": "12",
+          "population": 33764,
+          "county": "129",
+          "geoid": "12129"
+        },
+        {
+          "name": "Walton County, Florida",
+          "state": "12",
+          "population": 75305,
+          "county": "131",
+          "geoid": "12131"
+        },
+        {
+          "name": "Washington County, Florida",
+          "state": "12",
+          "population": 25318,
+          "county": "133",
+          "geoid": "12133"
+        }
+      ]
+    },
+    "2010": {
+      "dataset": "2010/dec/sf1",
+      "variable": "P001001",
+      "variable_label": "Total population (SF1 P1)",
+      "reference_date": "2010-04-01",
+      "state_total": 18801310,
+      "county_sum": 18801310,
+      "county_count": 67,
+      "counties": [
+        {
+          "name": "Alachua County, Florida",
+          "state": "12",
+          "population": 247336,
+          "county": "001",
+          "geoid": "12001"
+        },
+        {
+          "name": "Baker County, Florida",
+          "state": "12",
+          "population": 27115,
+          "county": "003",
+          "geoid": "12003"
+        },
+        {
+          "name": "Bay County, Florida",
+          "state": "12",
+          "population": 168852,
+          "county": "005",
+          "geoid": "12005"
+        },
+        {
+          "name": "Bradford County, Florida",
+          "state": "12",
+          "population": 28520,
+          "county": "007",
+          "geoid": "12007"
+        },
+        {
+          "name": "Brevard County, Florida",
+          "state": "12",
+          "population": 543376,
+          "county": "009",
+          "geoid": "12009"
+        },
+        {
+          "name": "Broward County, Florida",
+          "state": "12",
+          "population": 1748066,
+          "county": "011",
+          "geoid": "12011"
+        },
+        {
+          "name": "Calhoun County, Florida",
+          "state": "12",
+          "population": 14625,
+          "county": "013",
+          "geoid": "12013"
+        },
+        {
+          "name": "Charlotte County, Florida",
+          "state": "12",
+          "population": 159978,
+          "county": "015",
+          "geoid": "12015"
+        },
+        {
+          "name": "Citrus County, Florida",
+          "state": "12",
+          "population": 141236,
+          "county": "017",
+          "geoid": "12017"
+        },
+        {
+          "name": "Clay County, Florida",
+          "state": "12",
+          "population": 190865,
+          "county": "019",
+          "geoid": "12019"
+        },
+        {
+          "name": "Collier County, Florida",
+          "state": "12",
+          "population": 321520,
+          "county": "021",
+          "geoid": "12021"
+        },
+        {
+          "name": "Columbia County, Florida",
+          "state": "12",
+          "population": 67531,
+          "county": "023",
+          "geoid": "12023"
+        },
+        {
+          "name": "DeSoto County, Florida",
+          "state": "12",
+          "population": 34862,
+          "county": "027",
+          "geoid": "12027"
+        },
+        {
+          "name": "Dixie County, Florida",
+          "state": "12",
+          "population": 16422,
+          "county": "029",
+          "geoid": "12029"
+        },
+        {
+          "name": "Duval County, Florida",
+          "state": "12",
+          "population": 864263,
+          "county": "031",
+          "geoid": "12031"
+        },
+        {
+          "name": "Escambia County, Florida",
+          "state": "12",
+          "population": 297619,
+          "county": "033",
+          "geoid": "12033"
+        },
+        {
+          "name": "Flagler County, Florida",
+          "state": "12",
+          "population": 95696,
+          "county": "035",
+          "geoid": "12035"
+        },
+        {
+          "name": "Franklin County, Florida",
+          "state": "12",
+          "population": 11549,
+          "county": "037",
+          "geoid": "12037"
+        },
+        {
+          "name": "Gadsden County, Florida",
+          "state": "12",
+          "population": 46389,
+          "county": "039",
+          "geoid": "12039"
+        },
+        {
+          "name": "Gilchrist County, Florida",
+          "state": "12",
+          "population": 16939,
+          "county": "041",
+          "geoid": "12041"
+        },
+        {
+          "name": "Glades County, Florida",
+          "state": "12",
+          "population": 12884,
+          "county": "043",
+          "geoid": "12043"
+        },
+        {
+          "name": "Gulf County, Florida",
+          "state": "12",
+          "population": 15863,
+          "county": "045",
+          "geoid": "12045"
+        },
+        {
+          "name": "Hamilton County, Florida",
+          "state": "12",
+          "population": 14799,
+          "county": "047",
+          "geoid": "12047"
+        },
+        {
+          "name": "Hardee County, Florida",
+          "state": "12",
+          "population": 27731,
+          "county": "049",
+          "geoid": "12049"
+        },
+        {
+          "name": "Hendry County, Florida",
+          "state": "12",
+          "population": 39140,
+          "county": "051",
+          "geoid": "12051"
+        },
+        {
+          "name": "Hernando County, Florida",
+          "state": "12",
+          "population": 172778,
+          "county": "053",
+          "geoid": "12053"
+        },
+        {
+          "name": "Highlands County, Florida",
+          "state": "12",
+          "population": 98786,
+          "county": "055",
+          "geoid": "12055"
+        },
+        {
+          "name": "Hillsborough County, Florida",
+          "state": "12",
+          "population": 1229226,
+          "county": "057",
+          "geoid": "12057"
+        },
+        {
+          "name": "Holmes County, Florida",
+          "state": "12",
+          "population": 19927,
+          "county": "059",
+          "geoid": "12059"
+        },
+        {
+          "name": "Indian River County, Florida",
+          "state": "12",
+          "population": 138028,
+          "county": "061",
+          "geoid": "12061"
+        },
+        {
+          "name": "Jackson County, Florida",
+          "state": "12",
+          "population": 49746,
+          "county": "063",
+          "geoid": "12063"
+        },
+        {
+          "name": "Jefferson County, Florida",
+          "state": "12",
+          "population": 14761,
+          "county": "065",
+          "geoid": "12065"
+        },
+        {
+          "name": "Lafayette County, Florida",
+          "state": "12",
+          "population": 8870,
+          "county": "067",
+          "geoid": "12067"
+        },
+        {
+          "name": "Lake County, Florida",
+          "state": "12",
+          "population": 297052,
+          "county": "069",
+          "geoid": "12069"
+        },
+        {
+          "name": "Lee County, Florida",
+          "state": "12",
+          "population": 618754,
+          "county": "071",
+          "geoid": "12071"
+        },
+        {
+          "name": "Leon County, Florida",
+          "state": "12",
+          "population": 275487,
+          "county": "073",
+          "geoid": "12073"
+        },
+        {
+          "name": "Levy County, Florida",
+          "state": "12",
+          "population": 40801,
+          "county": "075",
+          "geoid": "12075"
+        },
+        {
+          "name": "Liberty County, Florida",
+          "state": "12",
+          "population": 8365,
+          "county": "077",
+          "geoid": "12077"
+        },
+        {
+          "name": "Madison County, Florida",
+          "state": "12",
+          "population": 19224,
+          "county": "079",
+          "geoid": "12079"
+        },
+        {
+          "name": "Manatee County, Florida",
+          "state": "12",
+          "population": 322833,
+          "county": "081",
+          "geoid": "12081"
+        },
+        {
+          "name": "Marion County, Florida",
+          "state": "12",
+          "population": 331298,
+          "county": "083",
+          "geoid": "12083"
+        },
+        {
+          "name": "Martin County, Florida",
+          "state": "12",
+          "population": 146318,
+          "county": "085",
+          "geoid": "12085"
+        },
+        {
+          "name": "Miami-Dade County, Florida",
+          "state": "12",
+          "population": 2496435,
+          "county": "086",
+          "geoid": "12086"
+        },
+        {
+          "name": "Monroe County, Florida",
+          "state": "12",
+          "population": 73090,
+          "county": "087",
+          "geoid": "12087"
+        },
+        {
+          "name": "Nassau County, Florida",
+          "state": "12",
+          "population": 73314,
+          "county": "089",
+          "geoid": "12089"
+        },
+        {
+          "name": "Okaloosa County, Florida",
+          "state": "12",
+          "population": 180822,
+          "county": "091",
+          "geoid": "12091"
+        },
+        {
+          "name": "Okeechobee County, Florida",
+          "state": "12",
+          "population": 39996,
+          "county": "093",
+          "geoid": "12093"
+        },
+        {
+          "name": "Orange County, Florida",
+          "state": "12",
+          "population": 1145956,
+          "county": "095",
+          "geoid": "12095"
+        },
+        {
+          "name": "Osceola County, Florida",
+          "state": "12",
+          "population": 268685,
+          "county": "097",
+          "geoid": "12097"
+        },
+        {
+          "name": "Palm Beach County, Florida",
+          "state": "12",
+          "population": 1320134,
+          "county": "099",
+          "geoid": "12099"
+        },
+        {
+          "name": "Pasco County, Florida",
+          "state": "12",
+          "population": 464697,
+          "county": "101",
+          "geoid": "12101"
+        },
+        {
+          "name": "Pinellas County, Florida",
+          "state": "12",
+          "population": 916542,
+          "county": "103",
+          "geoid": "12103"
+        },
+        {
+          "name": "Polk County, Florida",
+          "state": "12",
+          "population": 602095,
+          "county": "105",
+          "geoid": "12105"
+        },
+        {
+          "name": "Putnam County, Florida",
+          "state": "12",
+          "population": 74364,
+          "county": "107",
+          "geoid": "12107"
+        },
+        {
+          "name": "St. Johns County, Florida",
+          "state": "12",
+          "population": 190039,
+          "county": "109",
+          "geoid": "12109"
+        },
+        {
+          "name": "St. Lucie County, Florida",
+          "state": "12",
+          "population": 277789,
+          "county": "111",
+          "geoid": "12111"
+        },
+        {
+          "name": "Santa Rosa County, Florida",
+          "state": "12",
+          "population": 151372,
+          "county": "113",
+          "geoid": "12113"
+        },
+        {
+          "name": "Sarasota County, Florida",
+          "state": "12",
+          "population": 379448,
+          "county": "115",
+          "geoid": "12115"
+        },
+        {
+          "name": "Seminole County, Florida",
+          "state": "12",
+          "population": 422718,
+          "county": "117",
+          "geoid": "12117"
+        },
+        {
+          "name": "Sumter County, Florida",
+          "state": "12",
+          "population": 93420,
+          "county": "119",
+          "geoid": "12119"
+        },
+        {
+          "name": "Suwannee County, Florida",
+          "state": "12",
+          "population": 41551,
+          "county": "121",
+          "geoid": "12121"
+        },
+        {
+          "name": "Taylor County, Florida",
+          "state": "12",
+          "population": 22570,
+          "county": "123",
+          "geoid": "12123"
+        },
+        {
+          "name": "Union County, Florida",
+          "state": "12",
+          "population": 15535,
+          "county": "125",
+          "geoid": "12125"
+        },
+        {
+          "name": "Volusia County, Florida",
+          "state": "12",
+          "population": 494593,
+          "county": "127",
+          "geoid": "12127"
+        },
+        {
+          "name": "Wakulla County, Florida",
+          "state": "12",
+          "population": 30776,
+          "county": "129",
+          "geoid": "12129"
+        },
+        {
+          "name": "Walton County, Florida",
+          "state": "12",
+          "population": 55043,
+          "county": "131",
+          "geoid": "12131"
+        },
+        {
+          "name": "Washington County, Florida",
+          "state": "12",
+          "population": 24896,
+          "county": "133",
+          "geoid": "12133"
+        }
+      ]
+    }
+  },
+  "validation_passed": true,
+  "validation_issues": []
+}

@@ -1,0 +1,79 @@
+{
+  "retrieved_by": "GeoKnightGIS-census-research/1.0",
+  "assembled_at_utc": "2026-11-09T00:38:00Z",
+  "geography": "Florida state + 67 counties",
+  "reference_date_rule": "Decennial Census Day April 1 of the census year",
+  "requests": [
+    {
+      "label": "2020_pl_counties",
+      "dataset": "2020/dec/pl",
+      "variable": "P1_001N",
+      "reference_date": "2020-04-01",
+      "retrieved_at_utc": "2026-11-09T00:34:27Z",
+      "http_status": 200,
+      "bytes": 3291,
+      "sha256": "b4819e393c2314fea90c117ebd039e28be93e0da3aeb657d6062403dc5a53570",
+      "raw_file": "raw/2020_dec_pl_fl_counties.json",
+      "endpoint": "https://api.census.gov/data/2020/dec/pl?get=NAME,P1_001N&for=county:*&in=state:12"
+    },
+    {
+      "label": "2020_pl_state",
+      "dataset": "2020/dec/pl",
+      "variable": "P1_001N",
+      "reference_date": "2020-04-01",
+      "retrieved_at_utc": "2026-11-09T00:35:01Z",
+      "http_status": 200,
+      "bytes": 57,
+      "sha256": "949851d9990e490a542a17ff3321cdffa739734ded2a0222f2de5b3106f764b9",
+      "raw_file": "raw/2020_dec_pl_fl_state.json",
+      "endpoint": "https://api.census.gov/data/2020/dec/pl?get=NAME,P1_001N&for=state:12"
+    },
+    {
+      "label": "2010_dec_sf1_counties",
+      "dataset": "2010/dec/sf1",
+      "variable": "P001001",
+      "reference_date": "2010-04-01",
+      "retrieved_at_utc": "2026-11-09T00:36:24Z",
+      "http_status": 200,
+      "bytes": 3288,
+      "sha256": "d352c812132d89be81c73a289284245caf4dd85d780bc0a8e9f6da4d5209b413",
+      "raw_file": "raw/2010_dec_sf1_fl_counties.json",
+      "endpoint": "https://api.census.gov/data/2010/dec/sf1?get=NAME,P001001&for=county:*&in=state:12"
+    },
+    {
+      "label": "2010_dec_sf1_state",
+      "dataset": "2010/dec/sf1",
+      "variable": "P001001",
+      "reference_date": "2010-04-01",
+      "retrieved_at_utc": "2026-11-09T00:36:59Z",
+      "http_status": 200,
+      "bytes": 57,
+      "sha256": "56f00fee92f0fba8450b7ac120b84363e877589f91689ce5a39a50fa80a2fc49",
+      "raw_file": "raw/2010_dec_sf1_fl_state.json",
+      "endpoint": "https://api.census.gov/data/2010/dec/sf1?get=NAME,P001001&for=state:12"
+    }
+  ],
+  "validation": {
+    "issues": [],
+    "passed": true,
+    "checks": [
+      "schema headers include NAME, population variable, state, and county for county tables",
+      "exactly 67 Florida counties",
+      "no duplicate GEOIDs",
+      "population values positive integers",
+      "sum of county populations equals state total",
+      "2010 and 2020 county GEOID sets match",
+      "raw bodies contain no API key reflection"
+    ]
+  },
+  "documentation_urls": [
+    "https://www.census.gov/data/developers/data-sets/decennial-census.html",
+    "https://api.census.gov/data/2020/dec/pl.html",
+    "https://api.census.gov/data/2010/dec/sf1/examples.html"
+  ],
+  "notes": [
+    "The 2010 path https://api.census.gov/data/2010/sf1 returned HTTP 404.",
+    "The 2010 counts were retrieved from https://api.census.gov/data/2010/dec/sf1.",
+    "The API key stayed on the retrieval machine and is not in this repository."
+  ]
+}

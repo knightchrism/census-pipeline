@@ -2,8 +2,8 @@
 import csv
 import io
 
-from census_globe.catalog_build import build_catalog, comparison_allowed, load_acs, load_pep_v2025
-from census_globe.paths import CATALOG_PATH, EXPORT_PATH, ROOT
+from census_globe.catalog_build import build_catalog, comparison_allowed, load_acs, load_decennial, load_pep_v2025
+from census_globe.paths import CATALOG_PATH, DECENNIAL_PATH, EXPORT_PATH, ROOT
 
 
 def _csv(rows):
@@ -15,6 +15,18 @@ def _csv(rows):
     for row in rows:
         writer.writerow(row)
     return buf.getvalue()
+
+
+def test_page_frames_without_a_reset_button():
+    html = (ROOT / "globe" / "static" / "index.html").read_text()
+    script = (ROOT / "globe" / "static" / "app.js").read_text()
+    assert "Frame Florida" not in html
+    assert 'id="frame"' not in html
+    assert 'id="unavailable"' in html
+    assert "warn" not in html.split('id="unavailable"')[0][-40:]
+    assert "cannot be selected yet" in script
+    assert "Missing Key" not in script
+    assert "frameFlorida" in script
 
 
 def test_comparison_blocks_different_families():
@@ -32,13 +44,19 @@ def test_committed_catalog_is_one_pep_vintage_and_reconciles():
     catalog = __import__("json").loads(CATALOG_PATH.read_text())
     assert catalog["schema_version"] == 2
     assert catalog["qc"]["pep_vintages_mixed"] is False
-    assert catalog["qc"]["decennial_loaded"] is False
+    assert catalog["qc"]["decennial_loaded"] is True
+    assert catalog["qc"]["decennial_years"] == [2010, 2020]
     assert catalog["qc"]["acs_years"] == [2019, 2024]
     assert len(catalog["counties"]) == 67
     loaded = {item["id"]: item for item in catalog["sources"] if item["loaded"]}
-    assert set(loaded) == {"pep-v2025-july1", "pep-v2025-april1-base", "acs5"}
-    dec = next(item for item in catalog["sources"] if item["id"] == "decennial-april1")
-    assert dec["loaded"] is False and "Missing Key" in dec["reason"]
+    assert set(loaded) == {"pep-v2025-july1", "pep-v2025-april1-base", "acs5", "decennial-april1"}
+    dec = loaded["decennial-april1"]
+    assert dec["kind"] == "count" and dec["years"] == [2010, 2020]
+    assert dec["links"]["2010"] == "https://api.census.gov/data/2010/dec/sf1"
+    assert dec["links"]["2020"] == "https://api.census.gov/data/2020/dec/pl"
+    assert dec["variables"] == {"2010": "P001001", "2020": "P1_001N"}
+    assert "key=" not in __import__("json").dumps(catalog)
+    assert "Missing Key" not in __import__("json").dumps(catalog)
     july = loaded["pep-v2025-july1"]
     assert july["years"] == [2020, 2021, 2022, 2023, 2024, 2025]
     assert july["reference_date"] == "July 1" and july["vintage"] == 2025
@@ -51,6 +69,11 @@ def test_committed_catalog_is_one_pep_vintage_and_reconciles():
         county["pep_april1_2020_base"] for county in catalog["counties"]
     )
     assert catalog["state"]["pep_april1_2020_base"] != catalog["state"]["pep_july1"]["2020"]
+    assert catalog["state"]["decennial"]["2020"] == 21538187
+    assert catalog["state"]["decennial"]["2010"] == 18801310
+    assert catalog["state"]["decennial"]["2020"] != catalog["state"]["pep_april1_2020_base"]
+    for year in ("2010", "2020"):
+        assert sum(county["decennial"][year] for county in catalog["counties"]) == catalog["state"]["decennial"][year]
     miami = next(county for county in catalog["counties"] if county["geoid"] == "12086")
     assert miami["acs5"]["2024"]["median_household_income"]["value"] == 71753
     assert miami["acs5"]["2024"]["median_household_income"]["moe"] == 708
@@ -66,7 +89,8 @@ def test_real_pep_file_matches_catalog_when_cached():
         return
     pep = load_pep_v2025(path)
     acs = load_acs(EXPORT_PATH)
-    built = build_catalog(pep, acs, "2026-11-09T00:00:00Z")
+    decennial = load_decennial(DECENNIAL_PATH)
+    built = build_catalog(pep, acs, "2026-11-09T00:00:00Z", decennial)
     committed = __import__("json").loads(CATALOG_PATH.read_text())
     assert built["state"]["pep_july1"] == committed["state"]["pep_july1"]
     assert built["counties"][0]["pep_july1"] == committed["counties"][0]["pep_july1"]
@@ -81,3 +105,16 @@ def test_real_pep_file_matches_catalog_when_cached():
             )
         miami = next(county for county in committed["counties"] if county["geoid"] == "12086")
         assert miami["pep_july1"]["2024"] != old
+
+
+def test_decennial_file_reconciles_and_is_not_the_pep_base():
+    decennial = load_decennial(DECENNIAL_PATH)
+    assert decennial["state"] == {"2010": 18801310, "2020": 21538187}
+    assert set(decennial["by_year"]["2010"]) == set(decennial["by_year"]["2020"])
+    assert len(decennial["by_year"]["2020"]) == 67
+    catalog = __import__("json").loads(CATALOG_PATH.read_text())
+    assert decennial["state"]["2020"] != catalog["state"]["pep_april1_2020_base"]
+    miami = decennial["by_year"]["2020"]["12086"]
+    pep_miami = next(county["pep_april1_2020_base"] for county in catalog["counties"] if county["geoid"] == "12086")
+    assert miami != pep_miami
+    assert "key=" not in DECENNIAL_PATH.read_text().lower()
