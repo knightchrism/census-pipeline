@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#0b1f3a">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob: https://gibs.earthdata.nasa.gov; connect-src 'self' https://gibs.earthdata.nasa.gov; worker-src 'self' blob:; child-src blob:; base-uri 'none'; form-action 'none'">
+<title>Florida Census Globe · GeoKnight GIS</title>
+<link rel="stylesheet" href="static/vendor/maplibre-gl.css?v=6">
+<link rel="stylesheet" href="static/app.css?v=6">
+</head>
+<body>
+<header class="top">
+  <div class="brand"><span>GeoKnight <b>GIS</b></span></div>
+  <div class="title">Florida Census Globe</div>
+  <span class="badge" id="badge">Loading sources…</span>
+</header>
+<main class="app">
+  <div id="map" class="map" role="application" aria-label="Florida counties on a globe"><p id="startup" class="startup" hidden></p></div>
+  <div class="views" role="group" aria-label="View">
+    <button type="button" id="view-globe" class="on">Globe</button>
+    <button type="button" id="view-flat">Flat</button>
+    <label class="cmp"><input type="checkbox" id="extrude" checked> 3D columns</label>
+  </div>
+  <div class="legendbox" id="legend"></div>
+  <div class="tip" id="tip" hidden></div>
+  <aside class="panel" id="panel">
+    <button class="grip" id="grip" type="button" aria-label="Expand or collapse panel"><span></span></button>
+    <section class="sec">
+      <h2>What to show</h2>
+      <label class="pickl">Topic<select id="topic"></select></label>
+      <label class="pickl">Official source<select id="source"></select></label>
+      <p class="small muted" id="unavailable" hidden></p>
+      <label class="pickl">Year<select id="year"></select></label>
+      <div id="timeline" hidden></div>
+      <p class="small muted" id="history-note" hidden></p>
+      <p class="note" id="source-note"></p>
+      <dl class="cite" id="citation"></dl>
+      <p class="small" id="validation"></p>
+      <p class="small" id="enum-caveat" hidden></p>
+    </section>
+    <section class="sec">
+      <h2 id="place-name">Select a county</h2>
+      <p class="muted small" id="place-meta"></p>
+      <div class="kv" id="place-kv"></div>
+      <label class="pickl">Compare with<select id="compare"></select></label>
+      <p class="small" id="compare-out"></p>
+    </section>
+    <section class="sec small muted" id="credit"></section>
+    <footer class="foot small muted">© GeoKnight GIS. All rights reserved.</footer>
+  </aside>
+</main>
+<script src="static/vendor/maplibre-gl.js?v=6"></script>
+<script src="static/app.js?v=6"></script>
+<script src="/assets/gk-globes-back.js?v=1" defer></script>
+</body>
+</html>

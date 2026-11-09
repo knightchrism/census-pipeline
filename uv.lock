@@ -81,6 +81,7 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "pyshp" },
     { name = "pytest" },
 ]
 
@@ -95,7 +96,10 @@ requires-dist = [
 ]
 
 [package.metadata.requires-dev]
-dev = [{ name = "pytest", specifier = ">=9.1.1" }]
+dev = [
+    { name = "pyshp", specifier = ">=3.1.7" },
+    { name = "pytest", specifier = ">=9.1.1" },
+]
 
 [[package]]
 name = "certifi"
@@ -1345,6 +1349,15 @@ wheels = [
 [package.optional-dependencies]
 crypto = [
     { name = "cryptography" },
+]
+
+[[package]]
+name = "pyshp"
+version = "3.1.7"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/a6/1f/deb8f00dff4c92979e72db8f43e2d124653515385893aff7e3cf2e812a80/pyshp-3.1.7.tar.gz", hash = "sha256:bb7d91dedcf1f111c69957c0d7f76413ab21764bf719b31c2e79291da44f4469", size = 2270192, upload-time = "2026-11-07T10:24:38.59Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/79/94/19d26d3b9d496efcd532064eaf723d9bde6dbe7e045bc21bbb83bfb7f407/pyshp-3.1.7-py3-none-any.whl", hash = "sha256:13d28b2d576f124090bd09de047c435811c8a8e4c00b1cd3fe571f1331a352f7", size = 73875, upload-time = "2026-11-07T10:24:37.325Z" },
 ]
 
 [[package]]

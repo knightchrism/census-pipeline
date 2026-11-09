@@ -2,7 +2,7 @@
 name = "census-pipeline"
 license = { text = "Proprietary" }
 version = "1.0.0"
-description = "Census API -> DuckDB -> dbt -> MCP server portfolio project"
+description = "Census API -> DuckDB -> dbt -> MCP server, with a Florida county census globe"
 requires-python = ">=3.11"
 dependencies = [
   "requests>=2.31",
@@ -16,16 +16,19 @@ dependencies = [
 [project.scripts]
 census-ingest = "census_ingest.cli:main"
 census-mcp = "census_mcp.server:main"
+census-globe = "census_globe.server:main"
+census-globe-export = "census_globe.export:main"
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/census_ingest", "src/census_mcp"]
+packages = ["src/census_ingest", "src/census_mcp", "src/census_globe"]
 
 [dependency-groups]
 dev = [
+    "pyshp>=3.1.7",
     "pytest>=9.1.1",
 ]
 

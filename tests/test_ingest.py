@@ -96,6 +96,36 @@ def test_fetch_retries_then_succeeds(monkeypatch):
     assert len(rows) == 2 and s.calls == 3
 
 
+def test_summary_download_sends_honest_user_agent(tmp_path, monkeypatch):
+    from census_ingest import summary_file
+
+    seen = {}
+
+    class Response:
+        def raise_for_status(self):
+            return None
+
+        def iter_content(self, size):
+            yield b"ok"
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *args):
+            return False
+
+    def fake_get(url, stream, timeout, headers):
+        seen["headers"] = headers
+        return Response()
+
+    monkeypatch.setattr(summary_file.requests, "get", fake_get)
+    summary_file._download("https://www2.census.gov/programs-surveys/acs/summary_file/example", tmp_path / "a.dat")
+    agent = seen["headers"]["User-Agent"]
+    assert agent == summary_file.USER_AGENT
+    assert "GeoKnightGIS-census-pipeline" in agent
+    assert "Mozilla" not in agent
+
+
 def test_fetch_bad_key_not_retried():
     r = FakeResp(302)
     r.headers = {"X-DataWebAPI-KeyError": "1"}

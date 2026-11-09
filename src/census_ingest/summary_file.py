@@ -23,6 +23,8 @@ import requests
 
 log = logging.getLogger(__name__)
 SF_BASE = "https://www2.census.gov/programs-surveys/acs/summary_file"
+# Identifies this project to www2.census.gov. Do not impersonate a browser.
+USER_AGENT = "GeoKnightGIS-census-pipeline/1.0 (ACS Summary File ingest; contact: info@geoknightgis.com)"
 
 # Where each vintage's 5-year table files and geography (names) file live.
 SF_LAYOUT = {
@@ -46,7 +48,7 @@ def _download(url: str, dest: Path, retries: int = 4) -> Path:
     dest.parent.mkdir(parents=True, exist_ok=True)
     for attempt in range(retries + 1):
         try:
-            with requests.get(url, stream=True, timeout=120) as r:
+            with requests.get(url, stream=True, timeout=120, headers={"User-Agent": USER_AGENT}) as r:
                 r.raise_for_status()
                 tmp = dest.with_suffix(".part")
                 with open(tmp, "wb") as f:

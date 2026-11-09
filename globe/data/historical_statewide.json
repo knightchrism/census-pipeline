@@ -1,0 +1,265 @@
+{
+  "title": "Florida official historical statewide population research for census globe statehood timeline",
+  "assembled_at_utc": "2026-11-09T00:56:04Z",
+  "not_endorsed_by_census_bureau": true,
+  "statehood": {
+    "date": "1845-03-03",
+    "event": "Florida admitted as the 27th state",
+    "sources": [
+      {
+        "org": "Florida Department of State",
+        "url": "https://dos.fl.gov/florida-facts/florida-history/a-brief-history/statehood/",
+        "quote_summary": "Florida became the twenty-seventh state on March 3, 1845."
+      },
+      {
+        "org": "Library of Congress / Congress.gov CRS",
+        "url": "https://www.congress.gov/crs-product/R47747",
+        "quote_summary": "Florida admitted March 3, 1845 (5 Stat. 742); territory created March 30, 1822."
+      },
+      {
+        "org": "Library of Congress Law Library blog",
+        "url": "https://blogs.loc.gov/law/2016/03/on-this-day-florida-becomes-the-27th-state/",
+        "quote_summary": "On March 3, 1845 Florida became the 27th state."
+      }
+    ],
+    "not_a_population_observation": true,
+    "bracketing_federal_censuses": {
+      "before": 1840,
+      "after": 1850
+    }
+  },
+  "state_census_1845": {
+    "exists": true,
+    "official_archive": {
+      "org": "Florida Department of State, Division of Library and Information Services / State Archives",
+      "url": "https://dos.fl.gov/library-archives/research/explore-our-resources/florida-history-culture-and-heritage/beloved/state/",
+      "series": "First Census of the State of Florida, 1845 (Series S1373)",
+      "notes": [
+        "State censuses compiled in 1845 and every ten years afterward until abolished in 1949.",
+        "Archive description lists returns for 17 counties (not all counties then existing).",
+        "Antebellum returns enumerate counts by race/enslavement categories, not a full modern resident-population concept identical to later federal tables."
+      ]
+    },
+    "do_not_treat_as_day_of_statehood_population": true,
+    "no_invented_statewide_total_saved_here": true,
+    "reason": "No complete official statewide federal-style total for 1845-03-03 was verified in Census Bureau tables; archival state census coverage is incomplete and not interchangeable with decennial resident totals."
+  },
+  "statewide_decennial_series": [
+    {
+      "year": 1830,
+      "population": 34730,
+      "status": "territory",
+      "reference_date": "1830-06-01",
+      "source_id": "forstall1996_part3_fl_1830_1880"
+    },
+    {
+      "year": 1840,
+      "population": 54477,
+      "status": "territory",
+      "reference_date": "1840-06-01",
+      "source_id": "forstall1996_part3_fl_1830_1880"
+    },
+    {
+      "year": 1850,
+      "population": 87445,
+      "status": "state",
+      "reference_date": "1850-06-01",
+      "source_id": "forstall1996_part3_fl_1830_1880"
+    },
+    {
+      "year": 1860,
+      "population": 140424,
+      "status": "state",
+      "reference_date": "1860-06-01",
+      "source_id": "forstall1996_part3_fl_1830_1880"
+    },
+    {
+      "year": 1870,
+      "population": 187748,
+      "status": "state",
+      "reference_date": "1870-06-01",
+      "source_id": "forstall1996_part3_fl_1830_1880",
+      "caveat": "Census Bureau notes Southern undercount in 1870; no official state-level correction published in Forstall 1996"
+    },
+    {
+      "year": 1880,
+      "population": 269493,
+      "status": "state",
+      "reference_date": "1880-06-01",
+      "source_id": "forstall1996_part3_fl_1830_1880"
+    },
+    {
+      "year": 1890,
+      "population": 391422,
+      "status": "state",
+      "reference_date": "1890-06-01",
+      "source_id": "forstall1996_part3_fl_1890_1990"
+    },
+    {
+      "year": 1900,
+      "population": 528542,
+      "status": "state",
+      "reference_date": "1900-06-01",
+      "source_id": "forstall1996_part3_fl_1890_1990"
+    },
+    {
+      "year": 1910,
+      "population": 752619,
+      "status": "state",
+      "reference_date": "1910-04-15",
+      "source_id": "census_apportionment_change_1910_2020"
+    },
+    {
+      "year": 1920,
+      "population": 968470,
+      "status": "state",
+      "reference_date": "1920-01-01",
+      "source_id": "census_apportionment_change_1910_2020"
+    },
+    {
+      "year": 1930,
+      "population": 1468211,
+      "status": "state",
+      "reference_date": "1930-04-01",
+      "source_id": "census_apportionment_change_1910_2020"
+    },
+    {
+      "year": 1940,
+      "population": 1897414,
+      "status": "state",
+      "reference_date": "1940-04-01",
+      "source_id": "census_apportionment_change_1910_2020"
+    },
+    {
+      "year": 1950,
+      "population": 2771305,
+      "status": "state",
+      "reference_date": "1950-04-01",
+      "source_id": "census_apportionment_change_1910_2020"
+    },
+    {
+      "year": 1960,
+      "population": 4951560,
+      "status": "state",
+      "reference_date": "1960-04-01",
+      "source_id": "census_apportionment_change_1910_2020"
+    },
+    {
+      "year": 1970,
+      "population": 6789443,
+      "status": "state",
+      "reference_date": "1970-04-01",
+      "source_id": "census_apportionment_change_1910_2020"
+    },
+    {
+      "year": 1980,
+      "population": 9746324,
+      "status": "state",
+      "reference_date": "1980-04-01",
+      "source_id": "census_apportionment_change_1910_2020"
+    },
+    {
+      "year": 1990,
+      "population": 12937926,
+      "status": "state",
+      "reference_date": "1990-04-01",
+      "source_id": "census_apportionment_change_1910_2020"
+    },
+    {
+      "year": 2000,
+      "population": 15982378,
+      "status": "state",
+      "reference_date": "2000-04-01",
+      "source_id": "census_apportionment_change_1910_2020"
+    },
+    {
+      "year": 2010,
+      "population": 18801310,
+      "status": "state",
+      "reference_date": "2010-04-01",
+      "source_id": "census_apportionment_change_1910_2020"
+    },
+    {
+      "year": 2020,
+      "population": 21538187,
+      "status": "state",
+      "reference_date": "2020-04-01",
+      "source_id": "census_apportionment_change_1910_2020"
+    }
+  ],
+  "sources": {
+    "forstall1996": {
+      "title": "Population of States and Counties of the United States: 1790 to 1990",
+      "author_compiler": "Richard L. Forstall",
+      "publisher": "U.S. Bureau of the Census",
+      "year": 1996,
+      "url": "https://www2.census.gov/library/publications/decennial/1990/population-of-states-and-counties-us-1790-1990/population-of-states-and-counties-of-the-united-states-1790-1990.pdf",
+      "sha256": "cf394566d75cba4d06ba10343d0bafdc3b428b401d66922387810d8c58cb0451",
+      "used_for_years": [
+        1830,
+        1840,
+        1850,
+        1860,
+        1870,
+        1880,
+        1890,
+        1900
+      ]
+    },
+    "census_apportionment_change_1910_2020": {
+      "title": "Change in Resident Population of the 50 States, the District of Columbia, and Puerto Rico: 1910 to 2020",
+      "publisher": "U.S. Census Bureau",
+      "url": "https://www2.census.gov/programs-surveys/decennial/2020/data/apportionment/population-change-data-table.pdf",
+      "sha256": "3920c1a1a38c7fcb758182c392b335d57bde8c57f544c8adb281cc213ac390b1",
+      "used_for_years": [
+        1910,
+        1920,
+        1930,
+        1940,
+        1950,
+        1960,
+        1970,
+        1980,
+        1990,
+        2000,
+        2010,
+        2020
+      ]
+    }
+  },
+  "caveats": [
+    "Statehood on 1845-03-03 is a political event, not a census observation. Do not invent or interpolate a March 3, 1845 population.",
+    "Federal Florida coverage begins with the 1830 census (territorial). Forstall notes from 1830 on, all parts of Florida have had census coverage.",
+    "Reference dates vary: 1830-1900 June 1; 1910 April 15; 1920 January 1; 1930-2020 April 1 (Forstall census-dates section; modern April 1 is standard).",
+    "Enslaved people were counted in early federal censuses; free Black residents were counted. Voting and rights were not universal.",
+    "American Indians generally were not counted before 1890 unless considered part of the broader non-Indian society (taxes/settled communities). Forstall: tribal Indians omitted intentionally prior to 1890.",
+    "1870 Southern undercount is acknowledged by Census; Forstall does not apply a Florida-specific corrected total.",
+    "County boundaries changed repeatedly; today's 67 counties did not exist in 1830/1840/1850. Do not map historical county counts onto modern polygons without historical boundaries.",
+    "Forstall Part IV marks Florida first census 1830 and state outer extent essentially unchanged since 1830; county lines continued to change."
+  ],
+  "historical_boundaries": {
+    "recommended_noncommercial_research_source": {
+      "name": "Atlas of Historical County Boundaries (Newberry Library)",
+      "florida_page": "https://publications.newberry.org/ahcb/pages/Florida.html",
+      "download_index": "https://publications.newberry.org/ahcb/download/",
+      "coverage": "Florida historical county polygons dated day-by-day from 1763-10-07 through 2000-12-31",
+      "license_note": "Research library dataset; historically Creative Commons Attribution-NonCommercial-ShareAlike \u2014 verify current license before product use",
+      "not_census_bureau": true
+    },
+    "census_forstall_notes": "Forstall Part III Florida notes document county origins/renames (e.g., Mosquito/Orange/Brevard) and some enumeration quirks (Hernando 1860 estimated because not enumerated)."
+  },
+  "validation": {
+    "passed": true,
+    "issues": [],
+    "checks": [
+      "years 1830-2020 by decade present",
+      "populations positive and strictly increasing across decades",
+      "1910-1990 values match Census apportionment change table and Forstall Part III Florida state row"
+    ]
+  },
+  "recommended_staged_scope": [
+    "Stage A: Statewide decennial timeline 1830-2020 with statehood marker on 1845-03-03 (event annotation only; nearest observations 1840 territorial and 1850 state).",
+    "Stage B: Optional archival note about 1845 Florida state census (incomplete) without presenting a fabricated day-of-statehood total.",
+    "Stage C: Later \u2014 historical county layers only with Newberry AHCB (or equivalent official) boundaries matched to Forstall county tables for selected years; never modern 67-county polygons for 1840 counts."
+  ]
+}
