@@ -105,8 +105,20 @@ def load_acs(path: Path) -> dict:
         "name": payload["state"]["name"],
         "years": {year: _acs_measure(payload["state"]["estimates"][year]) for year in ("2019", "2024")},
     }
-    return {"state": state, "counties": counties, "generated_at": payload["generated_at"],
-            "source_files": payload["source"].get("files", [])}
+    formulas = {
+        item["name"]: item.get("formula")
+        for item in payload.get("metrics", [])
+        if item.get("name") in ACS_METRICS
+    }
+    return {
+        "state": state,
+        "counties": counties,
+        "generated_at": payload["generated_at"],
+        "source_files": payload["source"].get("files", []),
+        "formulas": formulas,
+        "sequence_hashes": _acs_sequence_hashes(payload["source"].get("files", [])),
+        "summary_file_index": payload["source"].get("summary_file_index"),
+    }
 
 
 def load_decennial(path: Path) -> dict:
@@ -269,6 +281,10 @@ def historical_source(historical: dict) -> dict:
             "statehood": historical["statehood"]["sources"][0]["url"],
         },
         "retrieval": {"sha256": historical["sha256"], "bytes": historical["bytes"]},
+        "citations": {
+            str(row["year"]): historical_citation(row, historical["sources"], historical["sha256"])
+            for row in historical["observations"]
+        },
     }
 
 
@@ -313,6 +329,7 @@ def decennial_source(decennial: dict, provenance: dict | None) -> dict:
             "2010": DEC_2010_URL,
             "2010_examples": "https://api.census.gov/data/2010/dec/sf1/examples.html",
         },
+        "citations": _decennial_citations(decennial, provenance),
         "variables": {"2010": "P001001", "2020": "P1_001N"},
         "retrieval": {
             "sha256": decennial["sha256"],
@@ -338,6 +355,155 @@ def comparison_allowed(left: dict, right: dict) -> dict:
     if left["id"] != right["id"]:
         return {"ok": False, "reason": "Those releases are separate vintages and are not mixed."}
     return {"ok": True, "reason": "Same source, geography, and reference-date family."}
+
+
+def _cite(**fields) -> dict:
+    citation = {
+        "traceable": True,
+        "document": None,
+        "links": [],
+        "reference_date": None,
+        "period": None,
+        "vintage": None,
+        "dataset": None,
+        "variable": None,
+        "column": None,
+        "table": None,
+        "pdf_page": None,
+        "retrieval": None,
+        "validation": None,
+    }
+    citation.update(fields)
+    return citation
+
+
+def historical_citation(obs: dict, docs: dict, extract_sha: str) -> dict:
+    """Map a recorded source id to its PDF. Page numbers were not recorded."""
+    mapped = {
+        "forstall1996_part3_fl_1830_1880": "forstall1996",
+        "forstall1996_part3_fl_1890_1990": "forstall1996",
+        "census_apportionment_change_1910_2020": "census_apportionment_change_1910_2020",
+    }.get(obs.get("source_id"))
+    doc = docs.get(mapped) if mapped else None
+    if not doc or not doc.get("url"):
+        return _cite(
+            traceable=False,
+            reference_date=obs.get("reference_date"),
+            retrieval=None,
+            validation=(
+                "No official document URL is recorded for this observation. "
+                "Do not treat the number as verified."
+            ),
+        )
+    return _cite(
+        document=doc.get("title"),
+        links=[{"label": doc.get("title") or "Official PDF", "url": doc["url"]}],
+        reference_date=obs.get("reference_date"),
+        dataset=obs.get("source_id"),
+        retrieval=(
+            f"PDF SHA-256 recorded with the research file: {doc.get('sha256')}. "
+            f"Extract SHA-256 {extract_sha}."
+        ),
+        validation=(
+            "The stored total matches the figure recorded from that PDF for this year. "
+            "No PDF page or table number was recorded. "
+            "This check does not certify enumeration accuracy."
+        ),
+    )
+
+
+def _decennial_citations(decennial: dict, provenance: dict | None) -> dict:
+    specs = {
+        "2010": {
+            "dataset": "2010/dec/sf1",
+            "variable": "P001001",
+            "url": DEC_2010_URL,
+            "label": "2010 Census SF1 API",
+            "extra": {"label": "2010 SF1 examples", "url": "https://api.census.gov/data/2010/dec/sf1/examples.html"},
+        },
+        "2020": {
+            "dataset": "2020/dec/pl",
+            "variable": "P1_001N",
+            "url": DEC_2020_URL,
+            "label": "2020 Census PL 94-171 API",
+            "extra": None,
+        },
+    }
+    requests = (provenance or {}).get("requests", [])
+    out = {}
+    for year, spec in specs.items():
+        hashes = [
+            item["sha256"] for item in requests
+            if item.get("dataset") == spec["dataset"] and item.get("variable") == spec["variable"] and item.get("sha256")
+        ]
+        links = [
+            {"label": spec["label"], "url": spec["url"]},
+            {"label": "Decennial census documentation", "url": DEC_PAGE},
+        ]
+        if spec["extra"]:
+            links.append(spec["extra"])
+        out[year] = _cite(
+            document=f"Decennial census {spec['dataset']}",
+            links=links,
+            reference_date=f"April 1, {year}",
+            dataset=spec["dataset"],
+            variable=spec["variable"],
+            retrieval=("Response SHA-256 " + "; ".join(hashes)) if hashes else f"Extract SHA-256 {decennial['sha256']}.",
+            validation=(
+                "County counts sum to the state total returned for the same query. "
+                "That check does not certify enumeration accuracy."
+            ),
+        )
+    return out
+
+
+def _acs_sequence_hashes(files: list) -> dict:
+    import re
+    found = {}
+    for item in files:
+        match = re.search(r"/(\d{4})/acsdt5y\d{4}-([a-z0-9]+)\.", item.get("path", ""))
+        if match:
+            found.setdefault(match.group(1), {})[match.group(2)] = item["sha256"]
+    return found
+
+
+def _acs_citations(acs: dict) -> dict:
+    """One citation per release year and metric. Page numbers were not recorded."""
+    formulas = acs.get("formulas", {})
+    hashes = acs.get("sequence_hashes", {})
+    out = {}
+    for year in (2019, 2024):
+        by_metric = {}
+        for name in ACS_METRICS:
+            formula = formulas.get(name)
+            tables = []
+            if formula:
+                import re
+                tables = sorted(set(re.findall(r"B\d{5}", formula)))
+            stems = [table.lower() for table in tables]
+            recorded = [hashes.get(str(year), {}).get(stem) for stem in stems]
+            recorded = [item for item in recorded if item]
+            by_metric[name] = _cite(
+                document="American Community Survey 5-year estimates, table-based Summary File",
+                links=[
+                    {"label": "ACS 5-year documentation", "url": ACS_PAGE},
+                    {"label": "ACS Summary File index", "url": "https://www2.census.gov/programs-surveys/acs/summary_file"},
+                ],
+                reference_date=None,
+                period="2015–2019" if year == 2019 else "2020–2024",
+                vintage=str(year),
+                dataset="acs/acs5 summary file",
+                variable=formula,
+                table=" and ".join(tables) if tables else None,
+                pdf_page=None,
+                retrieval=("Sequence-file SHA-256 " + ", ".join(recorded)) if recorded else None,
+                validation=(
+                    "The export's population county sums match the state total. "
+                    "Medians are not summed. This check does not certify enumeration accuracy."
+                ),
+            )
+        out[str(year)] = {"by_metric": by_metric}
+    return out
 
 
 def build_catalog(pep: dict, acs: dict, generated_at: str, decennial: dict, historical: dict, provenance: dict | None = None) -> dict:
@@ -399,6 +565,25 @@ def build_catalog(pep: dict, acs: dict, generated_at: str, decennial: dict, hist
                 "bytes": pep["bytes"],
                 "user_agent": "GeoKnightGIS-census-pipeline/1.0 (Florida census source catalog; contact: info@geoknightgis.com)",
             },
+            "citations": {
+                str(year): _cite(
+                    document="County Population Totals: 2020–2025, Vintage 2025 (co-est2025-alldata.csv)",
+                    links=[
+                        {"label": "Vintage 2025 county totals CSV", "url": PEP_V2025_URL},
+                        {"label": "Population Estimates product page", "url": PEP_PAGE},
+                    ],
+                    reference_date=f"July 1, {year}",
+                    vintage="2025",
+                    dataset="co-est2025-alldata.csv",
+                    column=f"POPESTIMATE{year}",
+                    retrieval=f"SHA-256 {pep['sha256']} of the CSV used for this build.",
+                    validation=(
+                        "County values in this column sum to the Florida state row. "
+                        "That check does not certify enumeration accuracy."
+                    ),
+                )
+                for year in range(2020, 2026)
+            },
         },
         {
             "id": "pep-v2025-april1-base",
@@ -420,6 +605,24 @@ def build_catalog(pep: dict, acs: dict, generated_at: str, decennial: dict, hist
             ),
             "links": {"product": PEP_PAGE, "file": PEP_V2025_URL},
             "retrieval": {"retrieved_for_build": generated_at, "sha256": pep["sha256"], "bytes": pep["bytes"]},
+            "citations": {
+                "2020": _cite(
+                    document="County Population Totals: 2020–2025, Vintage 2025 (co-est2025-alldata.csv)",
+                    links=[
+                        {"label": "Vintage 2025 county totals CSV", "url": PEP_V2025_URL},
+                        {"label": "Population Estimates product page", "url": PEP_PAGE},
+                    ],
+                    reference_date="April 1, 2020",
+                    vintage="2025",
+                    dataset="co-est2025-alldata.csv",
+                    column="ESTIMATESBASE2020",
+                    retrieval=f"SHA-256 {pep['sha256']} of the CSV used for this build.",
+                    validation=(
+                        "County values in ESTIMATESBASE2020 sum to the Florida state row. "
+                        "That check does not certify enumeration accuracy."
+                    ),
+                )
+            },
         },
         {
             "id": "acs5",
@@ -439,8 +642,12 @@ def build_catalog(pep: dict, acs: dict, generated_at: str, decennial: dict, hist
                 "Other ACS release years are not in this file. Income change is nominal. "
                 "A 90% margin of error is shown only when the export has one."
             ),
-            "links": {"documentation": ACS_PAGE},
+            "links": {
+                "documentation": ACS_PAGE,
+                "summary_file": acs.get("summary_file_index") or "https://www2.census.gov/programs-surveys/acs/summary_file",
+            },
             "retrieval": {"acs_export_generated_at": acs["generated_at"]},
+            "citations": _acs_citations(acs),
         },
         decennial_source(decennial, provenance),
         historical_source(historical),

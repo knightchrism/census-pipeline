@@ -3,7 +3,8 @@ import csv
 import io
 
 from census_globe.catalog_build import (
-    build_catalog, comparison_allowed, county_display_allowed, load_acs, load_decennial, load_historical, load_pep_v2025,
+    build_catalog, comparison_allowed, county_display_allowed, historical_citation,
+    load_acs, load_decennial, load_historical, load_pep_v2025,
 )
 from census_globe.paths import CATALOG_PATH, DECENNIAL_PATH, EXPORT_PATH, HISTORICAL_PATH, ROOT
 
@@ -149,3 +150,75 @@ def test_historical_series_has_no_1845_count_and_blocks_counties():
     script = (ROOT / "globe" / "static" / "app.js").read_text()
     assert "county_data === false" in script
     assert "Frame Florida" not in (ROOT / "globe" / "static" / "index.html").read_text()
+
+
+def test_unmapped_historical_observation_is_not_called_verified():
+    cite = historical_citation(
+        {"year": 1830, "reference_date": "1830-06-01", "source_id": "not-a-recorded-source"},
+        {},
+        "abc",
+    )
+    assert cite["traceable"] is False
+    assert cite["document"] is None
+    assert cite["links"] == []
+
+
+def test_every_selectable_year_has_a_citation_and_no_invented_page():
+    catalog = __import__("json").loads(CATALOG_PATH.read_text())
+    sources = {item["id"]: item for item in catalog["sources"]}
+    script = (ROOT / "globe" / "static" / "app.js").read_text()
+    assert "PDF page" in script and 'dd.textContent = "Missing"' in script
+    assert "does not certify enumeration accuracy" in __import__("json").dumps(catalog["sources"])
+    forstall = "population-of-states-and-counties-of-the-united-states-1790-1990.pdf"
+    apportion = "population-change-data-table.pdf"
+    for year in range(1830, 2021, 10):
+        cite = sources["historical-statewide"]["citations"][str(year)]
+        assert cite["traceable"] is True
+        assert cite["pdf_page"] is None
+        assert cite["table"] is None
+        assert cite["reference_date"]
+        url = cite["links"][0]["url"]
+        assert url.startswith("https://")
+        if year <= 1900:
+            assert forstall in url
+        else:
+            assert apportion in url
+    assert "1845" not in sources["historical-statewide"]["citations"]
+    for year in range(2020, 2026):
+        cite = sources["pep-v2025-july1"]["citations"][str(year)]
+        assert cite["vintage"] == "2025"
+        assert cite["column"] == f"POPESTIMATE{year}"
+        assert cite["pdf_page"] is None
+        assert "co-est2025-alldata.csv" in cite["links"][0]["url"]
+    base = sources["pep-v2025-april1-base"]["citations"]["2020"]
+    assert base["column"] == "ESTIMATESBASE2020"
+    assert base["vintage"] == "2025"
+    for year, variable in (("2010", "P001001"), ("2020", "P1_001N")):
+        cite = sources["decennial-april1"]["citations"][year]
+        assert cite["variable"] == variable
+        assert cite["dataset"].endswith(variable.split("_")[0][:0] or cite["dataset"])
+        assert variable == cite["variable"]
+        assert year in cite["links"][0]["url"] or cite["dataset"].split("/")[0] == year
+        assert cite["pdf_page"] is None
+        assert cite["table"] is None
+    assert sources["decennial-april1"]["citations"]["2010"]["links"][0]["url"].endswith("/2010/dec/sf1")
+    assert sources["decennial-april1"]["citations"]["2020"]["links"][0]["url"].endswith("/2020/dec/pl")
+    metrics = {
+        "total_population": "B01003_001E",
+        "median_household_income": "B19013_001E",
+        "median_age": "B01002_001E",
+        "hispanic_population": "B03002_012E",
+        "hispanic_share": "B03002_012E / B01003_001E",
+    }
+    for year in ("2019", "2024"):
+        pack = sources["acs5"]["citations"][year]["by_metric"]
+        assert set(pack) == set(metrics)
+        for name, formula in metrics.items():
+            cite = pack[name]
+            assert cite["variable"] == formula
+            assert cite["period"] == ("2015–2019" if year == "2019" else "2020–2024")
+            assert cite["vintage"] == year
+            assert cite["pdf_page"] is None
+            assert cite["table"]
+            assert cite["links"][0]["url"].startswith("https://www.census.gov/")
+            assert cite["retrieval"]

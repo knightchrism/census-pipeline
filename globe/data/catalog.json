@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-09T00:59:31Z",
+  "generated_at": "2026-11-09T01:14:00Z",
   "topics": [
     {
       "id": "population",
@@ -75,10 +75,156 @@
         "file": "https://www2.census.gov/programs-surveys/popest/datasets/2020-2025/counties/totals/co-est2025-alldata.csv"
       },
       "retrieval": {
-        "retrieved_for_build": "2026-11-09T00:59:31Z",
+        "retrieved_for_build": "2026-11-09T01:14:00Z",
         "sha256": "4f5a499d851e2cb48fd7a5405e5a9235453a8a66933657aacd10df0e264f35d5",
         "bytes": 2071735,
         "user_agent": "GeoKnightGIS-census-pipeline/1.0 (Florida census source catalog; contact: info@geoknightgis.com)"
+      },
+      "citations": {
+        "2020": {
+          "traceable": true,
+          "document": "County Population Totals: 2020\u20132025, Vintage 2025 (co-est2025-alldata.csv)",
+          "links": [
+            {
+              "label": "Vintage 2025 county totals CSV",
+              "url": "https://www2.census.gov/programs-surveys/popest/datasets/2020-2025/counties/totals/co-est2025-alldata.csv"
+            },
+            {
+              "label": "Population Estimates product page",
+              "url": "https://www.census.gov/data/datasets/time-series/demo/popest/2020s-counties-total.html"
+            }
+          ],
+          "reference_date": "July 1, 2020",
+          "period": null,
+          "vintage": "2025",
+          "dataset": "co-est2025-alldata.csv",
+          "variable": null,
+          "column": "POPESTIMATE2020",
+          "table": null,
+          "pdf_page": null,
+          "retrieval": "SHA-256 4f5a499d851e2cb48fd7a5405e5a9235453a8a66933657aacd10df0e264f35d5 of the CSV used for this build.",
+          "validation": "County values in this column sum to the Florida state row. That check does not certify enumeration accuracy."
+        },
+        "2021": {
+          "traceable": true,
+          "document": "County Population Totals: 2020\u20132025, Vintage 2025 (co-est2025-alldata.csv)",
+          "links": [
+            {
+              "label": "Vintage 2025 county totals CSV",
+              "url": "https://www2.census.gov/programs-surveys/popest/datasets/2020-2025/counties/totals/co-est2025-alldata.csv"
+            },
+            {
+              "label": "Population Estimates product page",
+              "url": "https://www.census.gov/data/datasets/time-series/demo/popest/2020s-counties-total.html"
+            }
+          ],
+          "reference_date": "July 1, 2021",
+          "period": null,
+          "vintage": "2025",
+          "dataset": "co-est2025-alldata.csv",
+          "variable": null,
+          "column": "POPESTIMATE2021",
+          "table": null,
+          "pdf_page": null,
+          "retrieval": "SHA-256 4f5a499d851e2cb48fd7a5405e5a9235453a8a66933657aacd10df0e264f35d5 of the CSV used for this build.",
+          "validation": "County values in this column sum to the Florida state row. That check does not certify enumeration accuracy."
+        },
+        "2022": {
+          "traceable": true,
+          "document": "County Population Totals: 2020\u20132025, Vintage 2025 (co-est2025-alldata.csv)",
+          "links": [
+            {
+              "label": "Vintage 2025 county totals CSV",
+              "url": "https://www2.census.gov/programs-surveys/popest/datasets/2020-2025/counties/totals/co-est2025-alldata.csv"
+            },
+            {
+              "label": "Population Estimates product page",
+              "url": "https://www.census.gov/data/datasets/time-series/demo/popest/2020s-counties-total.html"
+            }
+          ],
+          "reference_date": "July 1, 2022",
+          "period": null,
+          "vintage": "2025",
+          "dataset": "co-est2025-alldata.csv",
+          "variable": null,
+          "column": "POPESTIMATE2022",
+          "table": null,
+          "pdf_page": null,
+          "retrieval": "SHA-256 4f5a499d851e2cb48fd7a5405e5a9235453a8a66933657aacd10df0e264f35d5 of the CSV used for this build.",
+          "validation": "County values in this column sum to the Florida state row. That check does not certify enumeration accuracy."
+        },
+        "2023": {
+          "traceable": true,
+          "document": "County Population Totals: 2020\u20132025, Vintage 2025 (co-est2025-alldata.csv)",
+          "links": [
+            {
+              "label": "Vintage 2025 county totals CSV",
+              "url": "https://www2.census.gov/programs-surveys/popest/datasets/2020-2025/counties/totals/co-est2025-alldata.csv"
+            },
+            {
+              "label": "Population Estimates product page",
+              "url": "https://www.census.gov/data/datasets/time-series/demo/popest/2020s-counties-total.html"
+            }
+          ],
+          "reference_date": "July 1, 2023",
+          "period": null,
+          "vintage": "2025",
+          "dataset": "co-est2025-alldata.csv",
+          "variable": null,
+          "column": "POPESTIMATE2023",
+          "table": null,
+          "pdf_page": null,
+          "retrieval": "SHA-256 4f5a499d851e2cb48fd7a5405e5a9235453a8a66933657aacd10df0e264f35d5 of the CSV used for this build.",
+          "validation": "County values in this column sum to the Florida state row. That check does not certify enumeration accuracy."
+        },
+        "2024": {
+          "traceable": true,
+          "document": "County Population Totals: 2020\u20132025, Vintage 2025 (co-est2025-alldata.csv)",
+          "links": [
+            {
+              "label": "Vintage 2025 county totals CSV",
+              "url": "https://www2.census.gov/programs-surveys/popest/datasets/2020-2025/counties/totals/co-est2025-alldata.csv"
+            },
+            {
+              "label": "Population Estimates product page",
+              "url": "https://www.census.gov/data/datasets/time-series/demo/popest/2020s-counties-total.html"
+            }
+          ],
+          "reference_date": "July 1, 2024",
+          "period": null,
+          "vintage": "2025",
+          "dataset": "co-est2025-alldata.csv",
+          "variable": null,
+          "column": "POPESTIMATE2024",
+          "table": null,
+          "pdf_page": null,
+          "retrieval": "SHA-256 4f5a499d851e2cb48fd7a5405e5a9235453a8a66933657aacd10df0e264f35d5 of the CSV used for this build.",
+          "validation": "County values in this column sum to the Florida state row. That check does not certify enumeration accuracy."
+        },
+        "2025": {
+          "traceable": true,
+          "document": "County Population Totals: 2020\u20132025, Vintage 2025 (co-est2025-alldata.csv)",
+          "links": [
+            {
+              "label": "Vintage 2025 county totals CSV",
+              "url": "https://www2.census.gov/programs-surveys/popest/datasets/2020-2025/counties/totals/co-est2025-alldata.csv"
+            },
+            {
+              "label": "Population Estimates product page",
+              "url": "https://www.census.gov/data/datasets/time-series/demo/popest/2020s-counties-total.html"
+            }
+          ],
+          "reference_date": "July 1, 2025",
+          "period": null,
+          "vintage": "2025",
+          "dataset": "co-est2025-alldata.csv",
+          "variable": null,
+          "column": "POPESTIMATE2025",
+          "table": null,
+          "pdf_page": null,
+          "retrieval": "SHA-256 4f5a499d851e2cb48fd7a5405e5a9235453a8a66933657aacd10df0e264f35d5 of the CSV used for this build.",
+          "validation": "County values in this column sum to the Florida state row. That check does not certify enumeration accuracy."
+        }
       }
     },
     {
@@ -103,9 +249,35 @@
         "file": "https://www2.census.gov/programs-surveys/popest/datasets/2020-2025/counties/totals/co-est2025-alldata.csv"
       },
       "retrieval": {
-        "retrieved_for_build": "2026-11-09T00:59:31Z",
+        "retrieved_for_build": "2026-11-09T01:14:00Z",
         "sha256": "4f5a499d851e2cb48fd7a5405e5a9235453a8a66933657aacd10df0e264f35d5",
         "bytes": 2071735
+      },
+      "citations": {
+        "2020": {
+          "traceable": true,
+          "document": "County Population Totals: 2020\u20132025, Vintage 2025 (co-est2025-alldata.csv)",
+          "links": [
+            {
+              "label": "Vintage 2025 county totals CSV",
+              "url": "https://www2.census.gov/programs-surveys/popest/datasets/2020-2025/counties/totals/co-est2025-alldata.csv"
+            },
+            {
+              "label": "Population Estimates product page",
+              "url": "https://www.census.gov/data/datasets/time-series/demo/popest/2020s-counties-total.html"
+            }
+          ],
+          "reference_date": "April 1, 2020",
+          "period": null,
+          "vintage": "2025",
+          "dataset": "co-est2025-alldata.csv",
+          "variable": null,
+          "column": "ESTIMATESBASE2020",
+          "table": null,
+          "pdf_page": null,
+          "retrieval": "SHA-256 4f5a499d851e2cb48fd7a5405e5a9235453a8a66933657aacd10df0e264f35d5 of the CSV used for this build.",
+          "validation": "County values in ESTIMATESBASE2020 sum to the Florida state row. That check does not certify enumeration accuracy."
+        }
       }
     },
     {
@@ -135,10 +307,261 @@
       "moe": true,
       "note": "Loaded vintages are 2019 (2015\u20132019) and 2024 (2020\u20132024). Those windows do not overlap. Other ACS release years are not in this file. Income change is nominal. A 90% margin of error is shown only when the export has one.",
       "links": {
-        "documentation": "https://www.census.gov/data/developers/data-sets/acs-5year.html"
+        "documentation": "https://www.census.gov/data/developers/data-sets/acs-5year.html",
+        "summary_file": "https://www2.census.gov/programs-surveys/acs/summary_file"
       },
       "retrieval": {
         "acs_export_generated_at": "2026-11-08T22:40:07Z"
+      },
+      "citations": {
+        "2019": {
+          "by_metric": {
+            "total_population": {
+              "traceable": true,
+              "document": "American Community Survey 5-year estimates, table-based Summary File",
+              "links": [
+                {
+                  "label": "ACS 5-year documentation",
+                  "url": "https://www.census.gov/data/developers/data-sets/acs-5year.html"
+                },
+                {
+                  "label": "ACS Summary File index",
+                  "url": "https://www2.census.gov/programs-surveys/acs/summary_file"
+                }
+              ],
+              "reference_date": null,
+              "period": "2015\u20132019",
+              "vintage": "2019",
+              "dataset": "acs/acs5 summary file",
+              "variable": "B01003_001E",
+              "column": null,
+              "table": "B01003",
+              "pdf_page": null,
+              "retrieval": "Sequence-file SHA-256 70e30fd7fdcef3aba956b174baca16ab1dc7b1bd23902b77882abe87e51912da",
+              "validation": "The export's population county sums match the state total. Medians are not summed. This check does not certify enumeration accuracy."
+            },
+            "median_household_income": {
+              "traceable": true,
+              "document": "American Community Survey 5-year estimates, table-based Summary File",
+              "links": [
+                {
+                  "label": "ACS 5-year documentation",
+                  "url": "https://www.census.gov/data/developers/data-sets/acs-5year.html"
+                },
+                {
+                  "label": "ACS Summary File index",
+                  "url": "https://www2.census.gov/programs-surveys/acs/summary_file"
+                }
+              ],
+              "reference_date": null,
+              "period": "2015\u20132019",
+              "vintage": "2019",
+              "dataset": "acs/acs5 summary file",
+              "variable": "B19013_001E",
+              "column": null,
+              "table": "B19013",
+              "pdf_page": null,
+              "retrieval": "Sequence-file SHA-256 623266bf4541f2ab90c8541b0741aa509e2d612b0926de04fd58f0e08dffbc8f",
+              "validation": "The export's population county sums match the state total. Medians are not summed. This check does not certify enumeration accuracy."
+            },
+            "median_age": {
+              "traceable": true,
+              "document": "American Community Survey 5-year estimates, table-based Summary File",
+              "links": [
+                {
+                  "label": "ACS 5-year documentation",
+                  "url": "https://www.census.gov/data/developers/data-sets/acs-5year.html"
+                },
+                {
+                  "label": "ACS Summary File index",
+                  "url": "https://www2.census.gov/programs-surveys/acs/summary_file"
+                }
+              ],
+              "reference_date": null,
+              "period": "2015\u20132019",
+              "vintage": "2019",
+              "dataset": "acs/acs5 summary file",
+              "variable": "B01002_001E",
+              "column": null,
+              "table": "B01002",
+              "pdf_page": null,
+              "retrieval": "Sequence-file SHA-256 5dbd7502cdb2bab5b79ab12a195c06f6a9e5e5eda72e356dad4b4493df5f6c52",
+              "validation": "The export's population county sums match the state total. Medians are not summed. This check does not certify enumeration accuracy."
+            },
+            "hispanic_population": {
+              "traceable": true,
+              "document": "American Community Survey 5-year estimates, table-based Summary File",
+              "links": [
+                {
+                  "label": "ACS 5-year documentation",
+                  "url": "https://www.census.gov/data/developers/data-sets/acs-5year.html"
+                },
+                {
+                  "label": "ACS Summary File index",
+                  "url": "https://www2.census.gov/programs-surveys/acs/summary_file"
+                }
+              ],
+              "reference_date": null,
+              "period": "2015\u20132019",
+              "vintage": "2019",
+              "dataset": "acs/acs5 summary file",
+              "variable": "B03002_012E",
+              "column": null,
+              "table": "B03002",
+              "pdf_page": null,
+              "retrieval": "Sequence-file SHA-256 468e994cd79672a2d87f7a5ad88460f2e60fae44bbd30203f221d3d5211e228c",
+              "validation": "The export's population county sums match the state total. Medians are not summed. This check does not certify enumeration accuracy."
+            },
+            "hispanic_share": {
+              "traceable": true,
+              "document": "American Community Survey 5-year estimates, table-based Summary File",
+              "links": [
+                {
+                  "label": "ACS 5-year documentation",
+                  "url": "https://www.census.gov/data/developers/data-sets/acs-5year.html"
+                },
+                {
+                  "label": "ACS Summary File index",
+                  "url": "https://www2.census.gov/programs-surveys/acs/summary_file"
+                }
+              ],
+              "reference_date": null,
+              "period": "2015\u20132019",
+              "vintage": "2019",
+              "dataset": "acs/acs5 summary file",
+              "variable": "B03002_012E / B01003_001E",
+              "column": null,
+              "table": "B01003 and B03002",
+              "pdf_page": null,
+              "retrieval": "Sequence-file SHA-256 70e30fd7fdcef3aba956b174baca16ab1dc7b1bd23902b77882abe87e51912da, 468e994cd79672a2d87f7a5ad88460f2e60fae44bbd30203f221d3d5211e228c",
+              "validation": "The export's population county sums match the state total. Medians are not summed. This check does not certify enumeration accuracy."
+            }
+          }
+        },
+        "2024": {
+          "by_metric": {
+            "total_population": {
+              "traceable": true,
+              "document": "American Community Survey 5-year estimates, table-based Summary File",
+              "links": [
+                {
+                  "label": "ACS 5-year documentation",
+                  "url": "https://www.census.gov/data/developers/data-sets/acs-5year.html"
+                },
+                {
+                  "label": "ACS Summary File index",
+                  "url": "https://www2.census.gov/programs-surveys/acs/summary_file"
+                }
+              ],
+              "reference_date": null,
+              "period": "2020\u20132024",
+              "vintage": "2024",
+              "dataset": "acs/acs5 summary file",
+              "variable": "B01003_001E",
+              "column": null,
+              "table": "B01003",
+              "pdf_page": null,
+              "retrieval": "Sequence-file SHA-256 38d1a992bb058d184009b10b9b34987279aee575e4323165cfb5706c69b6ca90",
+              "validation": "The export's population county sums match the state total. Medians are not summed. This check does not certify enumeration accuracy."
+            },
+            "median_household_income": {
+              "traceable": true,
+              "document": "American Community Survey 5-year estimates, table-based Summary File",
+              "links": [
+                {
+                  "label": "ACS 5-year documentation",
+                  "url": "https://www.census.gov/data/developers/data-sets/acs-5year.html"
+                },
+                {
+                  "label": "ACS Summary File index",
+                  "url": "https://www2.census.gov/programs-surveys/acs/summary_file"
+                }
+              ],
+              "reference_date": null,
+              "period": "2020\u20132024",
+              "vintage": "2024",
+              "dataset": "acs/acs5 summary file",
+              "variable": "B19013_001E",
+              "column": null,
+              "table": "B19013",
+              "pdf_page": null,
+              "retrieval": "Sequence-file SHA-256 b25a176b0e6c339b6f3a2a0d3d8446bf06f5f080b4395993ec9a8313efb1c229",
+              "validation": "The export's population county sums match the state total. Medians are not summed. This check does not certify enumeration accuracy."
+            },
+            "median_age": {
+              "traceable": true,
+              "document": "American Community Survey 5-year estimates, table-based Summary File",
+              "links": [
+                {
+                  "label": "ACS 5-year documentation",
+                  "url": "https://www.census.gov/data/developers/data-sets/acs-5year.html"
+                },
+                {
+                  "label": "ACS Summary File index",
+                  "url": "https://www2.census.gov/programs-surveys/acs/summary_file"
+                }
+              ],
+              "reference_date": null,
+              "period": "2020\u20132024",
+              "vintage": "2024",
+              "dataset": "acs/acs5 summary file",
+              "variable": "B01002_001E",
+              "column": null,
+              "table": "B01002",
+              "pdf_page": null,
+              "retrieval": "Sequence-file SHA-256 04784637609550868d9da7321e7a947b34e0a10b654dbf6d344599f97f8de7f8",
+              "validation": "The export's population county sums match the state total. Medians are not summed. This check does not certify enumeration accuracy."
+            },
+            "hispanic_population": {
+              "traceable": true,
+              "document": "American Community Survey 5-year estimates, table-based Summary File",
+              "links": [
+                {
+                  "label": "ACS 5-year documentation",
+                  "url": "https://www.census.gov/data/developers/data-sets/acs-5year.html"
+                },
+                {
+                  "label": "ACS Summary File index",
+                  "url": "https://www2.census.gov/programs-surveys/acs/summary_file"
+                }
+              ],
+              "reference_date": null,
+              "period": "2020\u20132024",
+              "vintage": "2024",
+              "dataset": "acs/acs5 summary file",
+              "variable": "B03002_012E",
+              "column": null,
+              "table": "B03002",
+              "pdf_page": null,
+              "retrieval": "Sequence-file SHA-256 ef1a9310905393bf477820de8edb2935c1e9bdb356be65b5ee5fb6fceda911c1",
+              "validation": "The export's population county sums match the state total. Medians are not summed. This check does not certify enumeration accuracy."
+            },
+            "hispanic_share": {
+              "traceable": true,
+              "document": "American Community Survey 5-year estimates, table-based Summary File",
+              "links": [
+                {
+                  "label": "ACS 5-year documentation",
+                  "url": "https://www.census.gov/data/developers/data-sets/acs-5year.html"
+                },
+                {
+                  "label": "ACS Summary File index",
+                  "url": "https://www2.census.gov/programs-surveys/acs/summary_file"
+                }
+              ],
+              "reference_date": null,
+              "period": "2020\u20132024",
+              "vintage": "2024",
+              "dataset": "acs/acs5 summary file",
+              "variable": "B03002_012E / B01003_001E",
+              "column": null,
+              "table": "B01003 and B03002",
+              "pdf_page": null,
+              "retrieval": "Sequence-file SHA-256 38d1a992bb058d184009b10b9b34987279aee575e4323165cfb5706c69b6ca90, ef1a9310905393bf477820de8edb2935c1e9bdb356be65b5ee5fb6fceda911c1",
+              "validation": "The export's population county sums match the state total. Medians are not summed. This check does not certify enumeration accuracy."
+            }
+          }
+        }
       }
     },
     {
@@ -163,6 +586,60 @@
         "2020": "https://api.census.gov/data/2020/dec/pl",
         "2010": "https://api.census.gov/data/2010/dec/sf1",
         "2010_examples": "https://api.census.gov/data/2010/dec/sf1/examples.html"
+      },
+      "citations": {
+        "2010": {
+          "traceable": true,
+          "document": "Decennial census 2010/dec/sf1",
+          "links": [
+            {
+              "label": "2010 Census SF1 API",
+              "url": "https://api.census.gov/data/2010/dec/sf1"
+            },
+            {
+              "label": "Decennial census documentation",
+              "url": "https://www.census.gov/data/developers/data-sets/decennial-census.html"
+            },
+            {
+              "label": "2010 SF1 examples",
+              "url": "https://api.census.gov/data/2010/dec/sf1/examples.html"
+            }
+          ],
+          "reference_date": "April 1, 2010",
+          "period": null,
+          "vintage": null,
+          "dataset": "2010/dec/sf1",
+          "variable": "P001001",
+          "column": null,
+          "table": null,
+          "pdf_page": null,
+          "retrieval": "Response SHA-256 d352c812132d89be81c73a289284245caf4dd85d780bc0a8e9f6da4d5209b413; 56f00fee92f0fba8450b7ac120b84363e877589f91689ce5a39a50fa80a2fc49",
+          "validation": "County counts sum to the state total returned for the same query. That check does not certify enumeration accuracy."
+        },
+        "2020": {
+          "traceable": true,
+          "document": "Decennial census 2020/dec/pl",
+          "links": [
+            {
+              "label": "2020 Census PL 94-171 API",
+              "url": "https://api.census.gov/data/2020/dec/pl"
+            },
+            {
+              "label": "Decennial census documentation",
+              "url": "https://www.census.gov/data/developers/data-sets/decennial-census.html"
+            }
+          ],
+          "reference_date": "April 1, 2020",
+          "period": null,
+          "vintage": null,
+          "dataset": "2020/dec/pl",
+          "variable": "P1_001N",
+          "column": null,
+          "table": null,
+          "pdf_page": null,
+          "retrieval": "Response SHA-256 b4819e393c2314fea90c117ebd039e28be93e0da3aeb657d6062403dc5a53570; 949851d9990e490a542a17ff3321cdffa739734ded2a0222f2de5b3106f764b9",
+          "validation": "County counts sum to the state total returned for the same query. That check does not certify enumeration accuracy."
+        }
       },
       "variables": {
         "2010": "P001001",
@@ -423,6 +900,408 @@
       "retrieval": {
         "sha256": "33a88a9efe9e0ef00aa88e7230f28cb639a9274b60665a799d3463db3bb83e83",
         "bytes": 10343
+      },
+      "citations": {
+        "1830": {
+          "traceable": true,
+          "document": "Population of States and Counties of the United States: 1790 to 1990",
+          "links": [
+            {
+              "label": "Population of States and Counties of the United States: 1790 to 1990",
+              "url": "https://www2.census.gov/library/publications/decennial/1990/population-of-states-and-counties-us-1790-1990/population-of-states-and-counties-of-the-united-states-1790-1990.pdf"
+            }
+          ],
+          "reference_date": "1830-06-01",
+          "period": null,
+          "vintage": null,
+          "dataset": "forstall1996_part3_fl_1830_1880",
+          "variable": null,
+          "column": null,
+          "table": null,
+          "pdf_page": null,
+          "retrieval": "PDF SHA-256 recorded with the research file: cf394566d75cba4d06ba10343d0bafdc3b428b401d66922387810d8c58cb0451. Extract SHA-256 33a88a9efe9e0ef00aa88e7230f28cb639a9274b60665a799d3463db3bb83e83.",
+          "validation": "The stored total matches the figure recorded from that PDF for this year. No PDF page or table number was recorded. This check does not certify enumeration accuracy."
+        },
+        "1840": {
+          "traceable": true,
+          "document": "Population of States and Counties of the United States: 1790 to 1990",
+          "links": [
+            {
+              "label": "Population of States and Counties of the United States: 1790 to 1990",
+              "url": "https://www2.census.gov/library/publications/decennial/1990/population-of-states-and-counties-us-1790-1990/population-of-states-and-counties-of-the-united-states-1790-1990.pdf"
+            }
+          ],
+          "reference_date": "1840-06-01",
+          "period": null,
+          "vintage": null,
+          "dataset": "forstall1996_part3_fl_1830_1880",
+          "variable": null,
+          "column": null,
+          "table": null,
+          "pdf_page": null,
+          "retrieval": "PDF SHA-256 recorded with the research file: cf394566d75cba4d06ba10343d0bafdc3b428b401d66922387810d8c58cb0451. Extract SHA-256 33a88a9efe9e0ef00aa88e7230f28cb639a9274b60665a799d3463db3bb83e83.",
+          "validation": "The stored total matches the figure recorded from that PDF for this year. No PDF page or table number was recorded. This check does not certify enumeration accuracy."
+        },
+        "1850": {
+          "traceable": true,
+          "document": "Population of States and Counties of the United States: 1790 to 1990",
+          "links": [
+            {
+              "label": "Population of States and Counties of the United States: 1790 to 1990",
+              "url": "https://www2.census.gov/library/publications/decennial/1990/population-of-states-and-counties-us-1790-1990/population-of-states-and-counties-of-the-united-states-1790-1990.pdf"
+            }
+          ],
+          "reference_date": "1850-06-01",
+          "period": null,
+          "vintage": null,
+          "dataset": "forstall1996_part3_fl_1830_1880",
+          "variable": null,
+          "column": null,
+          "table": null,
+          "pdf_page": null,
+          "retrieval": "PDF SHA-256 recorded with the research file: cf394566d75cba4d06ba10343d0bafdc3b428b401d66922387810d8c58cb0451. Extract SHA-256 33a88a9efe9e0ef00aa88e7230f28cb639a9274b60665a799d3463db3bb83e83.",
+          "validation": "The stored total matches the figure recorded from that PDF for this year. No PDF page or table number was recorded. This check does not certify enumeration accuracy."
+        },
+        "1860": {
+          "traceable": true,
+          "document": "Population of States and Counties of the United States: 1790 to 1990",
+          "links": [
+            {
+              "label": "Population of States and Counties of the United States: 1790 to 1990",
+              "url": "https://www2.census.gov/library/publications/decennial/1990/population-of-states-and-counties-us-1790-1990/population-of-states-and-counties-of-the-united-states-1790-1990.pdf"
+            }
+          ],
+          "reference_date": "1860-06-01",
+          "period": null,
+          "vintage": null,
+          "dataset": "forstall1996_part3_fl_1830_1880",
+          "variable": null,
+          "column": null,
+          "table": null,
+          "pdf_page": null,
+          "retrieval": "PDF SHA-256 recorded with the research file: cf394566d75cba4d06ba10343d0bafdc3b428b401d66922387810d8c58cb0451. Extract SHA-256 33a88a9efe9e0ef00aa88e7230f28cb639a9274b60665a799d3463db3bb83e83.",
+          "validation": "The stored total matches the figure recorded from that PDF for this year. No PDF page or table number was recorded. This check does not certify enumeration accuracy."
+        },
+        "1870": {
+          "traceable": true,
+          "document": "Population of States and Counties of the United States: 1790 to 1990",
+          "links": [
+            {
+              "label": "Population of States and Counties of the United States: 1790 to 1990",
+              "url": "https://www2.census.gov/library/publications/decennial/1990/population-of-states-and-counties-us-1790-1990/population-of-states-and-counties-of-the-united-states-1790-1990.pdf"
+            }
+          ],
+          "reference_date": "1870-06-01",
+          "period": null,
+          "vintage": null,
+          "dataset": "forstall1996_part3_fl_1830_1880",
+          "variable": null,
+          "column": null,
+          "table": null,
+          "pdf_page": null,
+          "retrieval": "PDF SHA-256 recorded with the research file: cf394566d75cba4d06ba10343d0bafdc3b428b401d66922387810d8c58cb0451. Extract SHA-256 33a88a9efe9e0ef00aa88e7230f28cb639a9274b60665a799d3463db3bb83e83.",
+          "validation": "The stored total matches the figure recorded from that PDF for this year. No PDF page or table number was recorded. This check does not certify enumeration accuracy."
+        },
+        "1880": {
+          "traceable": true,
+          "document": "Population of States and Counties of the United States: 1790 to 1990",
+          "links": [
+            {
+              "label": "Population of States and Counties of the United States: 1790 to 1990",
+              "url": "https://www2.census.gov/library/publications/decennial/1990/population-of-states-and-counties-us-1790-1990/population-of-states-and-counties-of-the-united-states-1790-1990.pdf"
+            }
+          ],
+          "reference_date": "1880-06-01",
+          "period": null,
+          "vintage": null,
+          "dataset": "forstall1996_part3_fl_1830_1880",
+          "variable": null,
+          "column": null,
+          "table": null,
+          "pdf_page": null,
+          "retrieval": "PDF SHA-256 recorded with the research file: cf394566d75cba4d06ba10343d0bafdc3b428b401d66922387810d8c58cb0451. Extract SHA-256 33a88a9efe9e0ef00aa88e7230f28cb639a9274b60665a799d3463db3bb83e83.",
+          "validation": "The stored total matches the figure recorded from that PDF for this year. No PDF page or table number was recorded. This check does not certify enumeration accuracy."
+        },
+        "1890": {
+          "traceable": true,
+          "document": "Population of States and Counties of the United States: 1790 to 1990",
+          "links": [
+            {
+              "label": "Population of States and Counties of the United States: 1790 to 1990",
+              "url": "https://www2.census.gov/library/publications/decennial/1990/population-of-states-and-counties-us-1790-1990/population-of-states-and-counties-of-the-united-states-1790-1990.pdf"
+            }
+          ],
+          "reference_date": "1890-06-01",
+          "period": null,
+          "vintage": null,
+          "dataset": "forstall1996_part3_fl_1890_1990",
+          "variable": null,
+          "column": null,
+          "table": null,
+          "pdf_page": null,
+          "retrieval": "PDF SHA-256 recorded with the research file: cf394566d75cba4d06ba10343d0bafdc3b428b401d66922387810d8c58cb0451. Extract SHA-256 33a88a9efe9e0ef00aa88e7230f28cb639a9274b60665a799d3463db3bb83e83.",
+          "validation": "The stored total matches the figure recorded from that PDF for this year. No PDF page or table number was recorded. This check does not certify enumeration accuracy."
+        },
+        "1900": {
+          "traceable": true,
+          "document": "Population of States and Counties of the United States: 1790 to 1990",
+          "links": [
+            {
+              "label": "Population of States and Counties of the United States: 1790 to 1990",
+              "url": "https://www2.census.gov/library/publications/decennial/1990/population-of-states-and-counties-us-1790-1990/population-of-states-and-counties-of-the-united-states-1790-1990.pdf"
+            }
+          ],
+          "reference_date": "1900-06-01",
+          "period": null,
+          "vintage": null,
+          "dataset": "forstall1996_part3_fl_1890_1990",
+          "variable": null,
+          "column": null,
+          "table": null,
+          "pdf_page": null,
+          "retrieval": "PDF SHA-256 recorded with the research file: cf394566d75cba4d06ba10343d0bafdc3b428b401d66922387810d8c58cb0451. Extract SHA-256 33a88a9efe9e0ef00aa88e7230f28cb639a9274b60665a799d3463db3bb83e83.",
+          "validation": "The stored total matches the figure recorded from that PDF for this year. No PDF page or table number was recorded. This check does not certify enumeration accuracy."
+        },
+        "1910": {
+          "traceable": true,
+          "document": "Change in Resident Population of the 50 States, the District of Columbia, and Puerto Rico: 1910 to 2020",
+          "links": [
+            {
+              "label": "Change in Resident Population of the 50 States, the District of Columbia, and Puerto Rico: 1910 to 2020",
+              "url": "https://www2.census.gov/programs-surveys/decennial/2020/data/apportionment/population-change-data-table.pdf"
+            }
+          ],
+          "reference_date": "1910-04-15",
+          "period": null,
+          "vintage": null,
+          "dataset": "census_apportionment_change_1910_2020",
+          "variable": null,
+          "column": null,
+          "table": null,
+          "pdf_page": null,
+          "retrieval": "PDF SHA-256 recorded with the research file: 3920c1a1a38c7fcb758182c392b335d57bde8c57f544c8adb281cc213ac390b1. Extract SHA-256 33a88a9efe9e0ef00aa88e7230f28cb639a9274b60665a799d3463db3bb83e83.",
+          "validation": "The stored total matches the figure recorded from that PDF for this year. No PDF page or table number was recorded. This check does not certify enumeration accuracy."
+        },
+        "1920": {
+          "traceable": true,
+          "document": "Change in Resident Population of the 50 States, the District of Columbia, and Puerto Rico: 1910 to 2020",
+          "links": [
+            {
+              "label": "Change in Resident Population of the 50 States, the District of Columbia, and Puerto Rico: 1910 to 2020",
+              "url": "https://www2.census.gov/programs-surveys/decennial/2020/data/apportionment/population-change-data-table.pdf"
+            }
+          ],
+          "reference_date": "1920-01-01",
+          "period": null,
+          "vintage": null,
+          "dataset": "census_apportionment_change_1910_2020",
+          "variable": null,
+          "column": null,
+          "table": null,
+          "pdf_page": null,
+          "retrieval": "PDF SHA-256 recorded with the research file: 3920c1a1a38c7fcb758182c392b335d57bde8c57f544c8adb281cc213ac390b1. Extract SHA-256 33a88a9efe9e0ef00aa88e7230f28cb639a9274b60665a799d3463db3bb83e83.",
+          "validation": "The stored total matches the figure recorded from that PDF for this year. No PDF page or table number was recorded. This check does not certify enumeration accuracy."
+        },
+        "1930": {
+          "traceable": true,
+          "document": "Change in Resident Population of the 50 States, the District of Columbia, and Puerto Rico: 1910 to 2020",
+          "links": [
+            {
+              "label": "Change in Resident Population of the 50 States, the District of Columbia, and Puerto Rico: 1910 to 2020",
+              "url": "https://www2.census.gov/programs-surveys/decennial/2020/data/apportionment/population-change-data-table.pdf"
+            }
+          ],
+          "reference_date": "1930-04-01",
+          "period": null,
+          "vintage": null,
+          "dataset": "census_apportionment_change_1910_2020",
+          "variable": null,
+          "column": null,
+          "table": null,
+          "pdf_page": null,
+          "retrieval": "PDF SHA-256 recorded with the research file: 3920c1a1a38c7fcb758182c392b335d57bde8c57f544c8adb281cc213ac390b1. Extract SHA-256 33a88a9efe9e0ef00aa88e7230f28cb639a9274b60665a799d3463db3bb83e83.",
+          "validation": "The stored total matches the figure recorded from that PDF for this year. No PDF page or table number was recorded. This check does not certify enumeration accuracy."
+        },
+        "1940": {
+          "traceable": true,
+          "document": "Change in Resident Population of the 50 States, the District of Columbia, and Puerto Rico: 1910 to 2020",
+          "links": [
+            {
+              "label": "Change in Resident Population of the 50 States, the District of Columbia, and Puerto Rico: 1910 to 2020",
+              "url": "https://www2.census.gov/programs-surveys/decennial/2020/data/apportionment/population-change-data-table.pdf"
+            }
+          ],
+          "reference_date": "1940-04-01",
+          "period": null,
+          "vintage": null,
+          "dataset": "census_apportionment_change_1910_2020",
+          "variable": null,
+          "column": null,
+          "table": null,
+          "pdf_page": null,
+          "retrieval": "PDF SHA-256 recorded with the research file: 3920c1a1a38c7fcb758182c392b335d57bde8c57f544c8adb281cc213ac390b1. Extract SHA-256 33a88a9efe9e0ef00aa88e7230f28cb639a9274b60665a799d3463db3bb83e83.",
+          "validation": "The stored total matches the figure recorded from that PDF for this year. No PDF page or table number was recorded. This check does not certify enumeration accuracy."
+        },
+        "1950": {
+          "traceable": true,
+          "document": "Change in Resident Population of the 50 States, the District of Columbia, and Puerto Rico: 1910 to 2020",
+          "links": [
+            {
+              "label": "Change in Resident Population of the 50 States, the District of Columbia, and Puerto Rico: 1910 to 2020",
+              "url": "https://www2.census.gov/programs-surveys/decennial/2020/data/apportionment/population-change-data-table.pdf"
+            }
+          ],
+          "reference_date": "1950-04-01",
+          "period": null,
+          "vintage": null,
+          "dataset": "census_apportionment_change_1910_2020",
+          "variable": null,
+          "column": null,
+          "table": null,
+          "pdf_page": null,
+          "retrieval": "PDF SHA-256 recorded with the research file: 3920c1a1a38c7fcb758182c392b335d57bde8c57f544c8adb281cc213ac390b1. Extract SHA-256 33a88a9efe9e0ef00aa88e7230f28cb639a9274b60665a799d3463db3bb83e83.",
+          "validation": "The stored total matches the figure recorded from that PDF for this year. No PDF page or table number was recorded. This check does not certify enumeration accuracy."
+        },
+        "1960": {
+          "traceable": true,
+          "document": "Change in Resident Population of the 50 States, the District of Columbia, and Puerto Rico: 1910 to 2020",
+          "links": [
+            {
+              "label": "Change in Resident Population of the 50 States, the District of Columbia, and Puerto Rico: 1910 to 2020",
+              "url": "https://www2.census.gov/programs-surveys/decennial/2020/data/apportionment/population-change-data-table.pdf"
+            }
+          ],
+          "reference_date": "1960-04-01",
+          "period": null,
+          "vintage": null,
+          "dataset": "census_apportionment_change_1910_2020",
+          "variable": null,
+          "column": null,
+          "table": null,
+          "pdf_page": null,
+          "retrieval": "PDF SHA-256 recorded with the research file: 3920c1a1a38c7fcb758182c392b335d57bde8c57f544c8adb281cc213ac390b1. Extract SHA-256 33a88a9efe9e0ef00aa88e7230f28cb639a9274b60665a799d3463db3bb83e83.",
+          "validation": "The stored total matches the figure recorded from that PDF for this year. No PDF page or table number was recorded. This check does not certify enumeration accuracy."
+        },
+        "1970": {
+          "traceable": true,
+          "document": "Change in Resident Population of the 50 States, the District of Columbia, and Puerto Rico: 1910 to 2020",
+          "links": [
+            {
+              "label": "Change in Resident Population of the 50 States, the District of Columbia, and Puerto Rico: 1910 to 2020",
+              "url": "https://www2.census.gov/programs-surveys/decennial/2020/data/apportionment/population-change-data-table.pdf"
+            }
+          ],
+          "reference_date": "1970-04-01",
+          "period": null,
+          "vintage": null,
+          "dataset": "census_apportionment_change_1910_2020",
+          "variable": null,
+          "column": null,
+          "table": null,
+          "pdf_page": null,
+          "retrieval": "PDF SHA-256 recorded with the research file: 3920c1a1a38c7fcb758182c392b335d57bde8c57f544c8adb281cc213ac390b1. Extract SHA-256 33a88a9efe9e0ef00aa88e7230f28cb639a9274b60665a799d3463db3bb83e83.",
+          "validation": "The stored total matches the figure recorded from that PDF for this year. No PDF page or table number was recorded. This check does not certify enumeration accuracy."
+        },
+        "1980": {
+          "traceable": true,
+          "document": "Change in Resident Population of the 50 States, the District of Columbia, and Puerto Rico: 1910 to 2020",
+          "links": [
+            {
+              "label": "Change in Resident Population of the 50 States, the District of Columbia, and Puerto Rico: 1910 to 2020",
+              "url": "https://www2.census.gov/programs-surveys/decennial/2020/data/apportionment/population-change-data-table.pdf"
+            }
+          ],
+          "reference_date": "1980-04-01",
+          "period": null,
+          "vintage": null,
+          "dataset": "census_apportionment_change_1910_2020",
+          "variable": null,
+          "column": null,
+          "table": null,
+          "pdf_page": null,
+          "retrieval": "PDF SHA-256 recorded with the research file: 3920c1a1a38c7fcb758182c392b335d57bde8c57f544c8adb281cc213ac390b1. Extract SHA-256 33a88a9efe9e0ef00aa88e7230f28cb639a9274b60665a799d3463db3bb83e83.",
+          "validation": "The stored total matches the figure recorded from that PDF for this year. No PDF page or table number was recorded. This check does not certify enumeration accuracy."
+        },
+        "1990": {
+          "traceable": true,
+          "document": "Change in Resident Population of the 50 States, the District of Columbia, and Puerto Rico: 1910 to 2020",
+          "links": [
+            {
+              "label": "Change in Resident Population of the 50 States, the District of Columbia, and Puerto Rico: 1910 to 2020",
+              "url": "https://www2.census.gov/programs-surveys/decennial/2020/data/apportionment/population-change-data-table.pdf"
+            }
+          ],
+          "reference_date": "1990-04-01",
+          "period": null,
+          "vintage": null,
+          "dataset": "census_apportionment_change_1910_2020",
+          "variable": null,
+          "column": null,
+          "table": null,
+          "pdf_page": null,
+          "retrieval": "PDF SHA-256 recorded with the research file: 3920c1a1a38c7fcb758182c392b335d57bde8c57f544c8adb281cc213ac390b1. Extract SHA-256 33a88a9efe9e0ef00aa88e7230f28cb639a9274b60665a799d3463db3bb83e83.",
+          "validation": "The stored total matches the figure recorded from that PDF for this year. No PDF page or table number was recorded. This check does not certify enumeration accuracy."
+        },
+        "2000": {
+          "traceable": true,
+          "document": "Change in Resident Population of the 50 States, the District of Columbia, and Puerto Rico: 1910 to 2020",
+          "links": [
+            {
+              "label": "Change in Resident Population of the 50 States, the District of Columbia, and Puerto Rico: 1910 to 2020",
+              "url": "https://www2.census.gov/programs-surveys/decennial/2020/data/apportionment/population-change-data-table.pdf"
+            }
+          ],
+          "reference_date": "2000-04-01",
+          "period": null,
+          "vintage": null,
+          "dataset": "census_apportionment_change_1910_2020",
+          "variable": null,
+          "column": null,
+          "table": null,
+          "pdf_page": null,
+          "retrieval": "PDF SHA-256 recorded with the research file: 3920c1a1a38c7fcb758182c392b335d57bde8c57f544c8adb281cc213ac390b1. Extract SHA-256 33a88a9efe9e0ef00aa88e7230f28cb639a9274b60665a799d3463db3bb83e83.",
+          "validation": "The stored total matches the figure recorded from that PDF for this year. No PDF page or table number was recorded. This check does not certify enumeration accuracy."
+        },
+        "2010": {
+          "traceable": true,
+          "document": "Change in Resident Population of the 50 States, the District of Columbia, and Puerto Rico: 1910 to 2020",
+          "links": [
+            {
+              "label": "Change in Resident Population of the 50 States, the District of Columbia, and Puerto Rico: 1910 to 2020",
+              "url": "https://www2.census.gov/programs-surveys/decennial/2020/data/apportionment/population-change-data-table.pdf"
+            }
+          ],
+          "reference_date": "2010-04-01",
+          "period": null,
+          "vintage": null,
+          "dataset": "census_apportionment_change_1910_2020",
+          "variable": null,
+          "column": null,
+          "table": null,
+          "pdf_page": null,
+          "retrieval": "PDF SHA-256 recorded with the research file: 3920c1a1a38c7fcb758182c392b335d57bde8c57f544c8adb281cc213ac390b1. Extract SHA-256 33a88a9efe9e0ef00aa88e7230f28cb639a9274b60665a799d3463db3bb83e83.",
+          "validation": "The stored total matches the figure recorded from that PDF for this year. No PDF page or table number was recorded. This check does not certify enumeration accuracy."
+        },
+        "2020": {
+          "traceable": true,
+          "document": "Change in Resident Population of the 50 States, the District of Columbia, and Puerto Rico: 1910 to 2020",
+          "links": [
+            {
+              "label": "Change in Resident Population of the 50 States, the District of Columbia, and Puerto Rico: 1910 to 2020",
+              "url": "https://www2.census.gov/programs-surveys/decennial/2020/data/apportionment/population-change-data-table.pdf"
+            }
+          ],
+          "reference_date": "2020-04-01",
+          "period": null,
+          "vintage": null,
+          "dataset": "census_apportionment_change_1910_2020",
+          "variable": null,
+          "column": null,
+          "table": null,
+          "pdf_page": null,
+          "retrieval": "PDF SHA-256 recorded with the research file: 3920c1a1a38c7fcb758182c392b335d57bde8c57f544c8adb281cc213ac390b1. Extract SHA-256 33a88a9efe9e0ef00aa88e7230f28cb639a9274b60665a799d3463db3bb83e83.",
+          "validation": "The stored total matches the figure recorded from that PDF for this year. No PDF page or table number was recorded. This check does not certify enumeration accuracy."
+        }
       }
     }
   ],

@@ -315,7 +315,7 @@ function showPlace() {
       $("place-kv").append(span, strong);
     });
     $("compare").disabled = true;
-    $("compare-out").textContent = `${source.caveat} ${source.state_census_1845.note}`;
+    $("compare-out").textContent = "County comparisons are not available. This series is statewide only.";
     return;
   }
   $("compare").disabled = false;
@@ -357,6 +357,76 @@ function showPlace() {
   out.textContent = `${county.name} minus ${otherPlace.name}: ${fmt(item.unit, delta)}. Same source, same year, same metric.${moeNote}`;
 }
 
+function citationFor(source) {
+  const pack = source.citations && source.citations[String(state.year)];
+  if (!pack) return null;
+  if (pack.by_metric) {
+    const metric = topicById(state.topic).acs_metric;
+    return pack.by_metric[metric] || null;
+  }
+  return pack;
+}
+
+function citeRow(label, value, href) {
+  const dt = document.createElement("dt");
+  dt.textContent = label;
+  const dd = document.createElement("dd");
+  if (value == null || value === "") {
+    dd.className = "missing";
+    dd.textContent = "Missing";
+  } else if (href && /^https:\/\//.test(href)) {
+    const anchor = document.createElement("a");
+    anchor.href = href;
+    anchor.rel = "noreferrer";
+    anchor.textContent = value;
+    dd.append(anchor);
+  } else {
+    dd.textContent = String(value);
+  }
+  return [dt, dd];
+}
+
+function renderCitation(source) {
+  const box = $("citation");
+  const validation = $("validation");
+  const caveat = $("enum-caveat");
+  box.replaceChildren();
+  const cite = citationFor(source);
+  if (!cite) {
+    box.append(...citeRow("Official citation", null));
+    validation.textContent = "";
+  } else if (cite.traceable === false) {
+    box.append(...citeRow("Official citation", null));
+    box.append(...citeRow("Document", cite.document));
+    box.append(...citeRow("Reference date", cite.reference_date));
+    validation.textContent = cite.validation || "This observation is not tied to an official document in this build. Do not treat it as verified.";
+  } else {
+    box.append(...citeRow("Document", cite.document));
+    box.append(...citeRow("Dataset", cite.dataset));
+    if (cite.links && cite.links.length) {
+      cite.links.forEach((link) => box.append(...citeRow("Official citation", link.label, link.url)));
+    } else {
+      box.append(...citeRow("Official citation", null));
+    }
+    box.append(...citeRow("Reference date", cite.reference_date));
+    box.append(...citeRow("Period", cite.period));
+    box.append(...citeRow("Revision vintage", cite.vintage));
+    box.append(...citeRow("Variable", cite.variable));
+    box.append(...citeRow("Column", cite.column));
+    box.append(...citeRow("Table", cite.table));
+    box.append(...citeRow("PDF page", cite.pdf_page));
+    box.append(...citeRow("Retrieval", cite.retrieval));
+    validation.textContent = cite.validation || "";
+  }
+  if (source.caveat) {
+    caveat.hidden = false;
+    caveat.textContent = "Enumeration caveat: " + source.caveat;
+  } else {
+    caveat.hidden = true;
+    caveat.textContent = "";
+  }
+}
+
 function fillSelectors() {
   const topic = $("topic");
   topic.innerHTML = "";
@@ -390,18 +460,7 @@ function fillSelectors() {
   year.value = String(state.year);
   $("badge").textContent = spec.short;
   $("source-note").textContent = spec.note;
-  const link = spec.links.file || spec.links.documentation || spec.links.product;
-  $("source-link").replaceChildren();
-  if (link) {
-    const anchor = document.createElement("a");
-    anchor.href = link;
-    anchor.rel = "noreferrer";
-    anchor.textContent = link;
-    $("source-link").append("Official source: ", anchor);
-  }
-  if (spec.retrieval && spec.retrieval.sha256) {
-    $("source-link").append(document.createTextNode(` SHA-256 ${spec.retrieval.sha256}.`));
-  }
+  renderCitation(spec);
   const blocked = state.catalog.sources.filter((item) => chosen.sources.includes(item.id) && !item.loaded);
   const unavailable = $("unavailable");
   unavailable.hidden = blocked.length === 0;
