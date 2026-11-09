@@ -8,8 +8,8 @@
 <meta name="theme-color" content="#0b1f3a">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob: https://gibs.earthdata.nasa.gov; connect-src 'self' https://gibs.earthdata.nasa.gov; worker-src 'self' blob:; child-src blob:; base-uri 'none'; form-action 'none'">
 <title>Florida Census Globe · GeoKnight GIS</title>
-<link rel="stylesheet" href="static/vendor/maplibre-gl.css?v=4">
-<link rel="stylesheet" href="static/app.css?v=4">
+<link rel="stylesheet" href="static/vendor/maplibre-gl.css?v=5">
+<link rel="stylesheet" href="static/app.css?v=5">
 </head>
 <body>
 <header class="top">
@@ -50,7 +50,7 @@
     </section>
     <section class="sec">
       <h2>Question</h2>
-      <p class="note">No language model is connected. The answer is read from the loaded official series.</p>
+      <p class="note" id="llm-note">No language model is connected. The answer is read from the loaded official series.</p>
       <textarea id="question" maxlength="480" rows="3" placeholder="July 1 population in Orange County, 2024"></textarea>
       <button type="button" id="ask">Read the loaded figures</button>
       <p class="small" id="answer"></p>
@@ -59,8 +59,8 @@
     <footer class="foot small muted">© GeoKnight GIS. All rights reserved.</footer>
   </aside>
 </main>
-<script src="static/vendor/maplibre-gl.js?v=4"></script>
-<script src="static/app.js?v=4"></script>
+<script src="static/vendor/maplibre-gl.js?v=5"></script>
+<script src="static/app.js?v=5"></script>
 <script src="/assets/gk-globes-back.js?v=1" defer></script>
 </body>
 </html>

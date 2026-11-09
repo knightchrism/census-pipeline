@@ -24,7 +24,9 @@ def test_page_frames_without_a_reset_button():
     html = (ROOT / "globe" / "static" / "index.html").read_text()
     script = (ROOT / "globe" / "static" / "app.js").read_text()
     assert "Frame Florida" not in html
-    assert "app.js?v=4" in html
+    assert "app.js?v=5" in html
+    assert "/api/census/ask" in script
+    assert "figures-only" in script or "Not written by the model" in script
     assert "fl_state_outline" not in script
     assert "HIDDEN_TOPICS" in script and "hispanic_share" in script
     assert "historical-statewide" in script

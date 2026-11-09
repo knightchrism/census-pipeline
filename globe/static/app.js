@@ -639,6 +639,7 @@ async function boot() {
     showPlace();
     map.once("idle", () => { document.body.dataset.map = "ready"; });
   });
+  refreshLlmNote();
 }
 
 function refresh() {
@@ -657,6 +658,58 @@ $("extrude").onchange = () => { if (map) { paint(); frameFlorida(); } };
 $("view-globe").onclick = () => { state.globe = true; map.setProjection({ type: "globe" }); $("view-globe").classList.add("on"); $("view-flat").classList.remove("on"); frameFlorida(); };
 $("view-flat").onclick = () => { state.globe = false; map.setProjection({ type: "mercator" }); map.setPitch(0); $("view-flat").classList.add("on"); $("view-globe").classList.remove("on"); frameFlorida(); };
 $("grip").onclick = () => { $("panel").classList.toggle("min"); if (map) frameFlorida(); };
-$("ask").onclick = () => { $("answer").textContent = ask($("question").value); };
+async function refreshLlmNote() {
+  const note = $("llm-note");
+  if (!note) return;
+  try {
+    const response = await fetch("/api/census/ask/config", { credentials: "same-origin", cache: "no-store" });
+    if (!response.ok) return;
+    const cfg = await response.json();
+    state.llm = cfg && cfg.available && cfg.fallback === "disabled" ? cfg : null;
+  } catch (error) {
+    state.llm = null;
+  }
+  if (state.llm) {
+    note.textContent = "A local model (" + state.llm.model + ") can explain the loaded figures. Numbers and citations come from the official series. Cloud fallback is disabled.";
+    $("ask").textContent = "Ask the local model";
+  }
+}
+
+$("ask").onclick = async () => {
+  const question = $("question").value;
+  if (!state.llm) {
+    $("answer").textContent = ask(question);
+    return;
+  }
+  $("answer").textContent = "Asking the local model…";
+  try {
+    const response = await fetch("/api/census/ask", {
+      method: "POST",
+      credentials: "same-origin",
+      cache: "no-store",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        question,
+        topic: state.topic,
+        source: state.sourceId,
+        year: state.year,
+        geoid: state.geoid,
+        compare_geoid: $("compare").value || null,
+      }),
+    });
+    const body = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      const detail = typeof body.detail === "string" ? body.detail : ("The request failed (HTTP " + response.status + ").");
+      $("answer").textContent = detail;
+      return;
+    }
+    let text = body.answer || "";
+    if (body.mode !== "local-qwen") text = "Not written by the model. " + text;
+    if (body.citation && body.citation.document) text += " Source: " + body.citation.document + ".";
+    $("answer").textContent = text;
+  } catch (error) {
+    $("answer").textContent = "The local model request did not complete. " + (error && error.message ? error.message : "network error");
+  }
+};
 window.addEventListener("resize", () => { if (map && document.body.dataset.map === "ready") frameFlorida(); });
 boot();
