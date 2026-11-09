@@ -24,14 +24,19 @@ def test_page_frames_without_a_reset_button():
     html = (ROOT / "globe" / "static" / "index.html").read_text()
     script = (ROOT / "globe" / "static" / "app.js").read_text()
     assert "Frame Florida" not in html
-    assert "app.js?v=5" in html
-    assert "/api/census/ask" in script
-    assert "figures-only" in script or "Not written by the model" in script
+    assert "app.js?v=6" in html
+    assert "app.css?v=6" in html
+    assert 'id="question"' not in html
+    assert 'id="ask"' not in html
+    assert 'id="answer"' not in html
+    assert "<textarea" not in html
+    assert "No language model" not in html
+    assert "function ask" not in script
+    assert "/api/ask" not in script
+    assert "/api/census/ask" not in script
     assert "fl_state_outline" not in script
     assert "HIDDEN_TOPICS" in script and "hispanic_share" in script
     assert "historical-statewide" in script
-    assert "Race and ethnicity topics are turned off" in script
-    assert "statewide 1830–2020 census view is turned off" in script
     assert "was not JSON" in (ROOT / "globe" / "static" / "app.js").read_text()
     assert "Startup failed" in (ROOT / "globe" / "static" / "app.js").read_text()
     assert 'id="frame"' not in html

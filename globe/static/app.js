@@ -500,48 +500,6 @@ function fillSelectors() {
   compare.value = current;
 }
 
-function ask(question) {
-  const text = question.trim();
-  if (!text) return "Enter a question.";
-  if (text.length > 480) return "Question is limited to 480 characters.";
-  if (/\b(select|insert|update|delete|drop|alter)\b/i.test(text)) return "This panel does not run SQL.";
-  const q = text.toLowerCase();
-  if (/\b(hispanic|latino|latina|latinx|race|ethnicity|racial)\b/.test(q)) {
-    return "Race and ethnicity topics are turned off in this view. Population, income, and age are still available.";
-  }
-  let topic = state.topic;
-  if (HIDDEN_TOPICS.has(topic)) topic = "population";
-  if (q.includes("income")) topic = "income";
-  else if (q.includes("age")) topic = "age";
-  else if (q.includes("population") || q.includes("people")) topic = "population";
-  const specTopic = topicById(topic);
-  const allowedSources = shownSourceIds(specTopic);
-  let source = allowedSources.includes(state.sourceId) && sourceById(state.sourceId).loaded
-    ? sourceById(state.sourceId)
-    : sourceById(allowedSources.find((id) => sourceById(id).loaded));
-  const yearMatch = text.match(/\b(18[3-9]0|19[0-9]0|2000|2010|2019|202[0-5])\b/);
-  if (yearMatch && topic === "population" && !source.years.map(String).includes(yearMatch[1])) {
-    const decennial = sourceById("decennial-april1");
-    if (decennial && decennial.years.map(String).includes(yearMatch[1])) source = decennial;
-    else if ((sourceById("historical-statewide") || { years: [] }).years.map(String).includes(yearMatch[1])) {
-      return "The statewide 1830–2020 census view is turned off. County population, income, age, and the 2010 and 2020 county counts are still available.";
-    }
-  }
-  const named = state.catalog.counties.find((county) => q.includes(county.name.toLowerCase().replace(" county", "")));
-  const wantsState = /\bflorida\b/.test(q) && !named;
-  const place = named || (wantsState ? state.catalog.state : state.catalog.counties.find((county) => county.geoid === state.geoid) || state.catalog.state);
-  const year = yearMatch && source.years.map(String).includes(yearMatch[1]) ? Number(yearMatch[1]) : state.year;
-  if (!source.years.map(String).includes(String(year))) {
-    return `${source.label} is not loaded for ${yearMatch ? yearMatch[1] : "that year"}. Loaded years: ${source.years.join(", ")}.`;
-  }
-  const item = reading(place.geoid ? place : state.catalog.state, source, year, topic);
-  const who = place.name || "Florida";
-  const figure = source.kind === "count"
-    ? "This is a census count, not a PEP or ACS estimate."
-    : (item.moe == null ? "No 90% margin of error is published for this selection." : "90% margin of error " + fmt(item.unit, item.moe) + ".");
-  return `${who}, ${specTopic.label}, ${source.label}, ${source.reference_date} ${year}: ${fmt(item.unit, item.value)}. ${figure} ${source.note}`;
-}
-
 async function loadJson(url) {
   let response;
   try {
@@ -639,7 +597,6 @@ async function boot() {
     showPlace();
     map.once("idle", () => { document.body.dataset.map = "ready"; });
   });
-  refreshLlmNote();
 }
 
 function refresh() {
@@ -658,58 +615,5 @@ $("extrude").onchange = () => { if (map) { paint(); frameFlorida(); } };
 $("view-globe").onclick = () => { state.globe = true; map.setProjection({ type: "globe" }); $("view-globe").classList.add("on"); $("view-flat").classList.remove("on"); frameFlorida(); };
 $("view-flat").onclick = () => { state.globe = false; map.setProjection({ type: "mercator" }); map.setPitch(0); $("view-flat").classList.add("on"); $("view-globe").classList.remove("on"); frameFlorida(); };
 $("grip").onclick = () => { $("panel").classList.toggle("min"); if (map) frameFlorida(); };
-async function refreshLlmNote() {
-  const note = $("llm-note");
-  if (!note) return;
-  try {
-    const response = await fetch("/api/census/ask/config", { credentials: "same-origin", cache: "no-store" });
-    if (!response.ok) return;
-    const cfg = await response.json();
-    state.llm = cfg && cfg.available && cfg.fallback === "disabled" ? cfg : null;
-  } catch (error) {
-    state.llm = null;
-  }
-  if (state.llm) {
-    note.textContent = "A local model (" + state.llm.model + ") can explain the loaded figures. Numbers and citations come from the official series. Cloud fallback is disabled.";
-    $("ask").textContent = "Ask the local model";
-  }
-}
-
-$("ask").onclick = async () => {
-  const question = $("question").value;
-  if (!state.llm) {
-    $("answer").textContent = ask(question);
-    return;
-  }
-  $("answer").textContent = "Asking the local model…";
-  try {
-    const response = await fetch("/api/census/ask", {
-      method: "POST",
-      credentials: "same-origin",
-      cache: "no-store",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        question,
-        topic: state.topic,
-        source: state.sourceId,
-        year: state.year,
-        geoid: state.geoid,
-        compare_geoid: $("compare").value || null,
-      }),
-    });
-    const body = await response.json().catch(() => ({}));
-    if (!response.ok) {
-      const detail = typeof body.detail === "string" ? body.detail : ("The request failed (HTTP " + response.status + ").");
-      $("answer").textContent = detail;
-      return;
-    }
-    let text = body.answer || "";
-    if (body.mode !== "local-qwen") text = "Not written by the model. " + text;
-    if (body.citation && body.citation.document) text += " Source: " + body.citation.document + ".";
-    $("answer").textContent = text;
-  } catch (error) {
-    $("answer").textContent = "The local model request did not complete. " + (error && error.message ? error.message : "network error");
-  }
-};
 window.addEventListener("resize", () => { if (map && document.body.dataset.map === "ready") frameFlorida(); });
 boot();
